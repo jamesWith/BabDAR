@@ -14,7 +14,7 @@ def tracker(args):
     
         cap = cv2.VideoCapture(vidin)
     
-        fourcc = cv2.VideoWriter_fourcc(*'avc1') 
+        fourcc = cv2.VideoWriter_fourcc(*'mp4v') 
         vidout = cv2.VideoWriter(vidout, fourcc, 25.0, (1920,1080))
     
     total_time = 0.0

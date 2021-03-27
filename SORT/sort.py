@@ -299,7 +299,7 @@ def parse_args():
     parser = argparse.ArgumentParser(description='SORT demo')
     parser.add_argument('--display', help='Display online tracker output (slow) [False]', type=bool, default=False)
     parser.add_argument('--vidin', help='Path to the input video file', type=str, default='Test1.MP4')
-    parser.add_argument('--vidout', help='Path to the output video file', type=str, default='Test1tracked.MP4')
+    parser.add_argument('--vidout', help='Path to the output video file', type=str, default='Test1tracked.mp4')
     parser.add_argument("--max_age", 
                         help="Maximum number of frames to keep alive a track without associated detections.", 
                         type=int, default=100)
