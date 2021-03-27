@@ -6,18 +6,17 @@ import matplotlib.image as mpimg
 
 
 def tracker(args):
-    vidname
-    vidpath = "../../../Baboon-Videos/"
     detpath = args.det_file
-    vidinname = vidname + ".MP4"
-    vidoutname = "Tracked/" + vidname + "tracked.mp4"
-    
-    #cap = cv2.VideoCapture(vidpath + vidinname)
-    #
-    #fourcc = cv2.VideoWriter_fourcc(*'avc1') 
-    #vidout = cv2.VideoWriter(vidpath + vidoutname, fourcc, 25.0, (1920,1080))
     display = args.display
-    phase = args.phase
+    if display:
+        vidin = args.vidin
+        vidout = args.vidout
+    
+        cap = cv2.VideoCapture(vidin)
+    
+        fourcc = cv2.VideoWriter_fourcc(*'avc1') 
+        vidout = cv2.VideoWriter(vidout, fourcc, 25.0, (1920,1080))
+    
     total_time = 0.0
     total_frames = 0
     sort_tracker = Sort(max_age=args.max_age, 
@@ -40,43 +39,45 @@ def tracker(args):
             trackers, notfound, notyet = sort_tracker.update(dets, classid)
             cycle_time = time.time() - start_time
             total_time += cycle_time
-    
-            #if (cap.isOpened()):
-            #        ret, currentframe = cap.read()
-    #
-            #        # if currentframe is read correctly ret is True
-            #        if (ret):
-            #            for d in trackers:
-            #                start = (int(d[0]),int(d[1]))
-            #                end = (int(d[2]),int(d[3]))
-            #                colour = (255,0,0)
-            #                thickness = 5
-            #                cv2.rectangle(currentframe, start, end , colour, thickness)
-            #                font = cv2.FONT_HERSHEY_SIMPLEX
-            #                cv2.putText(currentframe, str(d[4]), start, font, 3, (0, 255, 0), 2, cv2.LINE_AA)
-            #            for d in notfound:
-            #                start = (int(d[0]),int(d[1]))
-            #                end = (int(d[2]),int(d[3]))
-            #                colour = (0,255,0)
-            #                thickness = 5
-            #                cv2.rectangle(currentframe, start, end , colour, thickness)
-            #                font = cv2.FONT_HERSHEY_SIMPLEX
-            #                cv2.putText(currentframe, str(d[4]), start, font, 3, (0, 0, 255), 2, cv2.LINE_AA)
-            #            for d in notyet:
-            #                start = (int(d[0]),int(d[1]))
-            #                end = (int(d[2]),int(d[3]))
-            #                colour = (0,0,255)
-            #                thickness = 5
-            #                cv2.rectangle(currentframe, start, end , colour, thickness)
-            #                font = cv2.FONT_HERSHEY_SIMPLEX
-            #                cv2.putText(currentframe, str(d[4]), start, font, 3, (255, 0, 0), 2, cv2.LINE_AA)
-    #
-            #        vidout.write(currentframe)
+            
+            if display:
+                if (cap.isOpened()):
+                        ret, currentframe = cap.read()
+     
+                        # if currentframe is read correctly ret is True
+                        if (ret):
+                            for d in trackers:
+                                start = (int(d[0]),int(d[1]))
+                                end = (int(d[2]),int(d[3]))
+                                colour = (255,0,0)
+                                thickness = 5
+                                cv2.rectangle(currentframe, start, end , colour, thickness)
+                                font = cv2.FONT_HERSHEY_SIMPLEX
+                                cv2.putText(currentframe, str(d[4]), start, font, 3, (0, 255, 0), 2, cv2.LINE_AA)
+                            for d in notfound:
+                                start = (int(d[0]),int(d[1]))
+                                end = (int(d[2]),int(d[3]))
+                                colour = (0,255,0)
+                                thickness = 5
+                                cv2.rectangle(currentframe, start, end , colour, thickness)
+                                font = cv2.FONT_HERSHEY_SIMPLEX
+                                cv2.putText(currentframe, str(d[4]), start, font, 3, (0, 0, 255), 2, cv2.LINE_AA)
+                            for d in notyet:
+                                start = (int(d[0]),int(d[1]))
+                                end = (int(d[2]),int(d[3]))
+                                colour = (0,0,255)
+                                thickness = 5
+                                cv2.rectangle(currentframe, start, end , colour, thickness)
+                                font = cv2.FONT_HERSHEY_SIMPLEX
+                                cv2.putText(currentframe, str(d[4]), start, font, 3, (255, 0, 0), 2, cv2.LINE_AA)
+     
+                        vidout.write(currentframe)
     
             for d in trackers:
                 print('%d,%d,%d,%d,%d,%d,1,%d,-1,-1'%(frame,d[4],d[0],d[1],d[2]-d[0],d[3]-d[1],d[5]),file=out_file)
-    #cap.release()
-    #vidout.release()
+    if display:
+        cap.release()
+        vidout.release()
     
     print("Total Tracking took: %.3f seconds for %d frames or %.1f FPS" % (total_time, total_frames, total_frames / total_time))
     return

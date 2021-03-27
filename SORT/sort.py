@@ -18,7 +18,7 @@ from __future__ import print_function
 import os
 import numpy as np
 import matplotlib
-matplotlib.use('TkAgg')
+#matplotlib.use('TkAgg')
 import matplotlib.pyplot as plt
 import matplotlib.patches as patches
 from skimage import io
@@ -297,9 +297,9 @@ class Sort(object):
 def parse_args():
     """Parse input arguments."""
     parser = argparse.ArgumentParser(description='SORT demo')
-    parser.add_argument('--display', dest='display', help='Display online tracker output (slow) [False]',action='store_true')
-    parser.add_argument("--seq_path", help="Path to detections.", type=str, default='data')
-    parser.add_argument("--phase", help="Subdirectory in seq_path.", type=str, default='train')
+    parser.add_argument('--display', help='Display online tracker output (slow) [False]', type=bool, default=False)
+    parser.add_argument('--vidin', help='Path to the input video file', type=str, default='Test1.MP4')
+    parser.add_argument('--vidout', help='Path to the output video file', type=str, default='Test1tracked.MP4')
     parser.add_argument("--max_age", 
                         help="Maximum number of frames to keep alive a track without associated detections.", 
                         type=int, default=100)
@@ -307,7 +307,7 @@ def parse_args():
                         help="Minimum number of associated detections before track is initialised.", 
                         type=int, default=20)
     parser.add_argument("--iou_threshold", help="Minimum IOU for match.", type=float, default=0.1)
-    parser.add_argument("--det_file", help="path to the det.txt file.", type=str, default="../det.txt")
+    parser.add_argument("--det_file", help="path to the det.txt file.", type=str, default="det.txt")
     args = parser.parse_args()
     return args
 
