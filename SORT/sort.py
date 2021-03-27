@@ -260,9 +260,9 @@ class Sort(object):
     for trk in reversed(self.trackers):
         d, classid = trk.get_state()
         d = d[0]
-        if (trk.time_since_update < 1) and (trk.hit_streak >= self.min_hits or self.frame_count <= self.min_hits):
+        if (trk.time_since_update < 1) and (trk.hit_streak >= self.min_hits or self.frame_count <= self.min_hits): 
           ret.append(np.concatenate((d,[trk.id+1], [classid])).reshape(1,-1)) # +1 as MOT benchmark requires positive
-        elif (trk.hit_streak >= self.min_hits or self.frame_count <= self.min_hits):
+        elif (trk.hit_streak >= self.min_hits or self.frame_count <= self.min_hits): # if the track has been around for long enough, or not yet had a chance to be around for long enough
           notfound.append(np.concatenate((d,[trk.id+1], [classid])).reshape(1,-1))
         else:
           notyet.append(np.concatenate((d,[trk.id+1], [classid])).reshape(1,-1))
