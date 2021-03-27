@@ -24,7 +24,7 @@ def tracker(args):
                             iou_threshold=args.iou_threshold) #create instance of the SORT tracker
     seq_dets = np.loadtxt(detpath , delimiter=',')
     
-    with open(detpath, 'w') as out_file:
+    with open(detpath[:-4] + "track.txt", 'w') as out_file:
         print("Processing")
         for frame in range(int(seq_dets[:,0].max())):
             frame += 1 #detection and frame numbers begin at 1
@@ -42,36 +42,36 @@ def tracker(args):
             
             if display:
                 if (cap.isOpened()):
-                        ret, currentframe = cap.read()
-     
-                        # if currentframe is read correctly ret is True
-                        if (ret):
-                            for d in trackers:
-                                start = (int(d[0]),int(d[1]))
-                                end = (int(d[2]),int(d[3]))
-                                colour = (255,0,0)
-                                thickness = 5
-                                cv2.rectangle(currentframe, start, end , colour, thickness)
-                                font = cv2.FONT_HERSHEY_SIMPLEX
-                                cv2.putText(currentframe, str(d[4]), start, font, 3, (0, 255, 0), 2, cv2.LINE_AA)
-                            for d in notfound:
-                                start = (int(d[0]),int(d[1]))
-                                end = (int(d[2]),int(d[3]))
-                                colour = (0,255,0)
-                                thickness = 5
-                                cv2.rectangle(currentframe, start, end , colour, thickness)
-                                font = cv2.FONT_HERSHEY_SIMPLEX
-                                cv2.putText(currentframe, str(d[4]), start, font, 3, (0, 0, 255), 2, cv2.LINE_AA)
-                            for d in notyet:
-                                start = (int(d[0]),int(d[1]))
-                                end = (int(d[2]),int(d[3]))
-                                colour = (0,0,255)
-                                thickness = 5
-                                cv2.rectangle(currentframe, start, end , colour, thickness)
-                                font = cv2.FONT_HERSHEY_SIMPLEX
-                                cv2.putText(currentframe, str(d[4]), start, font, 3, (255, 0, 0), 2, cv2.LINE_AA)
-     
-                        vidout.write(currentframe)
+                    ret, currentframe = cap.read()
+    
+                    # if currentframe is read correctly ret is True
+                    if (ret):
+                        for d in trackers:
+                            start = (int(d[0]),int(d[1]))
+                            end = (int(d[2]),int(d[3]))
+                            colour = (255,0,0)
+                            thickness = 5
+                            cv2.rectangle(currentframe, start, end , colour, thickness)
+                            font = cv2.FONT_HERSHEY_SIMPLEX
+                            cv2.putText(currentframe, str(d[4]), start, font, 3, (0, 255, 0), 2, cv2.LINE_AA)
+                        for d in notfound:
+                            start = (int(d[0]),int(d[1]))
+                            end = (int(d[2]),int(d[3]))
+                            colour = (0,255,0)
+                            thickness = 5
+                            cv2.rectangle(currentframe, start, end , colour, thickness)
+                            font = cv2.FONT_HERSHEY_SIMPLEX
+                            cv2.putText(currentframe, str(d[4]), start, font, 3, (0, 0, 255), 2, cv2.LINE_AA)
+                        for d in notyet:
+                            start = (int(d[0]),int(d[1]))
+                            end = (int(d[2]),int(d[3]))
+                            colour = (0,0,255)
+                            thickness = 5
+                            cv2.rectangle(currentframe, start, end , colour, thickness)
+                            font = cv2.FONT_HERSHEY_SIMPLEX
+                            cv2.putText(currentframe, str(d[4]), start, font, 3, (255, 0, 0), 2, cv2.LINE_AA)
+    
+                    vidout.write(currentframe)
     
             for d in trackers:
                 print('%d,%d,%d,%d,%d,%d,1,%d,-1,-1'%(frame,d[4],d[0],d[1],d[2]-d[0],d[3]-d[1],d[5]),file=out_file)
