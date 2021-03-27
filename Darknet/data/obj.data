@@ -1,5 +1,5 @@
-classes = 1
+classes = 2
 train = data/train.txt
 valid = data/test.txt
-names = data/obj.names
+names = Darknet/data/obj.names
 backup = /mydrive/yolov4/backup
