@@ -265,7 +265,7 @@ class Sort(object):
         elif (trk.hit_streak >= self.min_hits or self.frame_count <= self.min_hits):
           notfound.append(np.concatenate((d,[trk.id+1], [classid])).reshape(1,-1))
         else:
-          notfound.append(np.concatenate((d,[trk.id+1], [classid])).reshape(1,-1))
+          notyet.append(np.concatenate((d,[trk.id+1], [classid])).reshape(1,-1))
         i -= 1
         # remove dead tracklet
         if(trk.time_since_update > self.max_age):
