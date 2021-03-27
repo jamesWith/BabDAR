@@ -5,9 +5,10 @@ import matplotlib.pyplot as plt
 import matplotlib.image as mpimg
 
 
-def tracker(vidname):
+def tracker(args):
+    vidname
     vidpath = "../../../Baboon-Videos/"
-    detpath = "../../../Baboon-Videos/Detections/"
+    detpath = args.det_file
     vidinname = vidname + ".MP4"
     vidoutname = "Tracked/" + vidname + "tracked.mp4"
     
@@ -15,7 +16,6 @@ def tracker(vidname):
     #
     #fourcc = cv2.VideoWriter_fourcc(*'avc1') 
     #vidout = cv2.VideoWriter(vidpath + vidoutname, fourcc, 25.0, (1920,1080))
-    args = parse_args()
     display = args.display
     phase = args.phase
     total_time = 0.0
@@ -23,9 +23,9 @@ def tracker(vidname):
     sort_tracker = Sort(max_age=args.max_age, 
                             min_hits=args.min_hits,
                             iou_threshold=args.iou_threshold) #create instance of the SORT tracker
-    seq_dets = np.loadtxt(detpath + "det" + vidname + ".txt", delimiter=',')
+    seq_dets = np.loadtxt(detpath , delimiter=',')
     
-    with open("../../../Baboon-Videos/Tracked/" + "sort" + vidname + ".txt", 'w') as out_file:
+    with open(detpath, 'w') as out_file:
         print("Processing")
         for frame in range(int(seq_dets[:,0].max())):
             frame += 1 #detection and frame numbers begin at 1
@@ -82,5 +82,8 @@ def tracker(vidname):
     return
 
 if __name__ == '__main__':
-    filename = 'Melon.Zucchini_Rep4p3_24.10.2017'
-    tracker(filename)
+    args = parse_args()
+    tracker(args)
+
+
+

@@ -307,6 +307,7 @@ def parse_args():
                         help="Minimum number of associated detections before track is initialised.", 
                         type=int, default=20)
     parser.add_argument("--iou_threshold", help="Minimum IOU for match.", type=float, default=0.1)
+    parser.add_argument("--det_file", help="path to the det.txt file.", type=str, default="../det.txt")
     args = parser.parse_args()
     return args
 
