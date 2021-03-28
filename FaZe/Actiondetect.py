@@ -342,12 +342,13 @@ def Detect(filename):
 							buc2 = getbucketcrop(bucket, crop.framesforrecognition[frameinsegment + 1], nextbucketdetails[1], nextbucketdetails[2], nextbucketdetails[3])
 							rgbdiffbucket = np.abs(np.subtract(buc1.astype(np.int16), buc2.astype(np.int16)))
 							print(rgbdiffbucket)
-							cv2.imwrite('/content/rgbdiff'+ str(framenum) + str(bucket[4]) +'.jpg', rgbdiffbucket) 
-							movevalue = np.sum(rgbdiffbucket)
-							if bucket[4] not in bucketdict:
-								bucketdict[bucket[4]] = movevalue
-							else:
-								bucketdict[bucket[4]] = bucketdict[bucket[4]] + movevalue #add up the total intersecting_area() over six frames
+							if rgbdiffbucket != []:
+								cv2.imwrite('/content/rgbdiff'+ str(framenum) + str(bucket[4]) +'.jpg', rgbdiffbucket) 
+								movevalue = np.sum(rgbdiffbucket)
+								if bucket[4] not in bucketdict:
+									bucketdict[bucket[4]] = movevalue
+								else:
+									bucketdict[bucket[4]] = bucketdict[bucket[4]] + movevalue #add up the total intersecting_area() over six frames
 					BucketID = -1
 					maxintesect = 0
 					for key, value in bucketdict.items():
