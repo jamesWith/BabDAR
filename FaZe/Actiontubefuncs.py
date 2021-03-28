@@ -108,10 +108,10 @@ def getbucketcrop(bucket, wholecrop, top, left, scale):
 	bucright = bucket[0] + bucket[2]
 	bucbot = bucket[1] + bucket[3]
 	print(buctop, bucbot, bucleft, bucright)
-	relleft = int((bucleft - left)/scale)
-	reltop = int((buctop - top)/scale)
-	relright = int((bucright - left)/scale)
-	relbot = int((bucbot - top)/scale)
+	relleft = min(max(int((bucleft - left)/scale),0), 64*4)
+	reltop = min(max(int((buctop - top)/scale),0), 64*4)
+	relright = min(max(int((bucright - left)/scale),0), 64*4)
+	relbot = min(max(int((bucbot - top)/scale),0), 64*4)
 	print(reltop, relbot, relleft, relright)
 	bucketcrop = np.asanyarray(wholecrop)[reltop:relbot, relleft:relright]
 	return bucketcrop
