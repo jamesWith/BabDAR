@@ -1,0 +1,2 @@
+0 Taking_from_bucket
+1 No_action

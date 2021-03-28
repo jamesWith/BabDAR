@@ -72,7 +72,7 @@ def centre(box):
 	centrefromtop = box[1] + box[3]/2
 	return (int(centrefromleft), int(centrefromtop))
 
-def Intersecting(bbox1, bbox2): #bbox must be array in form [centre distance from left, centre distance from top, total width, total height] all values in pixels
+def Intersecting(bbox1, bbox2): #bbox must be array in form [topleft distance from left, topleft distance from top, total width, total height] all values in pixels
 	cl1 = bbox1[0] + (bbox1[2]/2)
 	ct1 = bbox1[1] + (bbox1[3]/2)
 	cl2 = bbox2[0] + (bbox2[2]/2)
@@ -81,6 +81,17 @@ def Intersecting(bbox1, bbox2): #bbox must be array in form [centre distance fro
 		return True
 	else:
 		return False
+
+def intersecting_area(detection, box):
+	detbottom = detection[1] + detection[3]
+	detleft = detection[0]
+	detright = detection[0] + detection[2]
+	boxbottom = box[1] + box[3]
+	boxcentre = box[0] + box[2]/2
+	dist = min(calcdistance([detleft, detbottom], [boxcentre, boxbottom]),calcdistance([detright, detbottom], [boxcentre, boxbottom]))
+
+	return dist
+
 
 
 def convertbboxtopixeltopleft(bbox, imgwidth, imgheight): 	# input fraction of image[centre from left, from top, width, height]

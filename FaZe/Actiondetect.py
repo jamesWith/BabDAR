@@ -9,18 +9,19 @@ import torchvision.transforms as Transforms
 import numpy as np
 import matplotlib.pyplot as plt
 from pathlib import Path
+from torchcam.cams import CAM
 
 from Actiontubefuncs import *
 from Modified_CNN import TSN_model
 from transforms import *
 from var_evaluation import Evaluation
+from misc_functions import get_example_params, save_class_activation_images
 
 import argparse
 
 parser = argparse.ArgumentParser(description="Standard video-level testing")
 parser.add_argument('dataset', type=str, choices=['ucf101', 'hmdb51', 'kinetics', 'baboons'])
-parser.add_argument('--filename',type=str)
-parser.add_argument('--path',type=str)
+parser.add_argument('filename',type=str)
 
 parser.add_argument('weights', nargs='+', type=str,
                     help='1st and 2nd index is RGB and RGBDiff weights respectively')
@@ -34,7 +35,6 @@ parser.add_argument('--crop_fusion_type', type=str, default='avg',
                     choices=['avg', 'max', 'topk'])
 parser.add_argument('--dropout', type=float, default=0.7)
 parser.add_argument('--classInd_file', type=str, default='')
-parser.add_argument('--video', type=str, default='')
 parser.add_argument('-j', '--workers', default=4, type=int, metavar='N',
                     help='number of data loading workers (default: 4)')
 parser.add_argument('--gpus', nargs='+', type=int, default=None)
@@ -134,7 +134,7 @@ else:
 #Intializing the streams  
 model_RGB = TSN_model(num_class, 1, 'RGB',
                 base_model_name=args.arch, consensus_type='avg', dropout=args.dropout)
-  
+
 model_RGBDiff = TSN_model(num_class, 1, 'RGBDiff',
                 base_model_name=args.arch, consensus_type='avg', dropout=args.dropout)
   
@@ -172,7 +172,7 @@ model_RGBDiff.eval()
 
 
 class Cropobj(object):
-	def __init__(self, BaboonDetection, path, filename, nearestbucket, size = 0, centreleft = 0, centretop = 0 ):
+	def __init__(self, BaboonDetection, nearestbucket, size = 0, centreleft = 0, centretop = 0 ):
 		fourcc = cv2.VideoWriter_fourcc(*'mp4v') 
 		
 		self.missedframes = 0 # how many frames its missed
@@ -190,16 +190,11 @@ class Cropobj(object):
 		self.prevnearestbucket = nearestbucket
 		self.overlapframes = []
 		self.framesforrecognition = []
-
+		self.intersectingdetails = []
 		cropcount = 0
-		#while Path(path + 'Crops/' + filename + '/' + str(self.ID) + '_' + str(cropcount) + '.mp4').is_file():
-		while Path(path + 'Crops/Combinedcrops/' + str(self.ID) + '_' + str(cropcount) + '.mp4').is_file():
-			cropcount += 1 
-		#self.vidout = cv2.VideoWriter( path + 'Crops/' + filename + '/' + str(self.ID) + '_' + str(cropcount) + '.mp4', fourcc, 25.0, (64*4,64*4))
-		self.vidout = cv2.VideoWriter( path + 'Crops/Combinedcrops/' + str(self.ID) + '_' + str(cropcount) + '.mp4', fourcc, 25.0, (64*4,64*4))
 
 
-def Add_new_crops(crops, detections):
+def Add_new_crops(crops, detections, bucketlist, framenum):
 	for baboon in detections: #Go through all detections
 
 		if not any(crop for crop in crops if crop.ID == baboon[4]): # If a crop doesnt already exist for this ID
@@ -221,91 +216,62 @@ def Add_new_crops(crops, detections):
 						minbucketdist = dist
 						nearestbucket = bucket[4]
 
-				newcrop = Cropobj(baboon, path, filename, nearestbucket)
+				newcrop = Cropobj(baboon, nearestbucket)
 				crops.append(newcrop) # Add to list of crops
 	return
 
-def Create_action_tubes(crop, detections):
+def Create_action_tubes(crop, crops, detections, bucketlist, framenum, currentframe, maxmissedframes, maxnotintersecting):
 
 	crop.length += 1
+	intersectinglist = []
+	intersectingdetails = []
 
 	detection = [detection for detection in detections if detection[4] == crop.ID] # Returns the the detection of the current crop
 	if detection != []:
 		detection = detection[0]
-		#print(detection)
-		
+
 		intersectinglist = []
-		minbucketdist = 1920
-		nearestbucket = -1
+		bucketdetails = []
 
 		for bucket in bucketlist[framenum]:
-			dist = calcdistance(centre(bucket) , centre(detection))
-
-			if bucket[4] != crop.prevnearestbucket: # Penalise buckets that werent the closest in  previous frame
-				dist += 30
-
-			if dist < minbucketdist: # Save the closest bucket
-				minbucketdist = dist
-				nearestbucket = bucket[4]
-
 			if Intersecting(detection, bucket): # Find if the baboon is intesecting any buckets
 				intersectinglist.append(bucket)
+			bucketdetails.append([bucket[4], intersecting_area(detection, bucket)])
 
 		crop.centreleft += (centre(detection)[0] - crop.centreleft)*0.1
 		crop.centretop += (centre(detection)[1] - crop.centretop)*0.1
 		crop.size += (max(detection[2] , detection[3]) - crop.size)*0.05
 		frame = Createcropstabilised(currentframe, detection, intersectinglist, [crop.centreleft,crop.centretop] , crop.size)
-		#frame = Createcrop(currentframe, detection, intersectinglist)
-		crop.vidout.write(frame)
-					
-		if crop.length % args.sampling_freq < 6:
-			frame = Image.fromarray(cv2.cvtColor(orig_frame, cv2.COLOR_BGR2RGB))
-			crop.framesforrecognition.append(frame)
-			print('Picked frame, ', crop.length)
-
-		if len(crop.overlapframes) >= 12:
-			crop.overlapframes.pop(0)
-
-		crop.overlapframes.append(frame)
+		
 		crop.lastpos = detection
-		crop.missedframes = 0
+
+		if crop.length % args.sampling_freq < 6:
+			frame = Image.fromarray(cv2.cvtColor(frame, cv2.COLOR_BGR2RGB))
+			crop.framesforrecognition.append(frame)
+			crop.intersectingdetails.append(bucketdetails)
+			print('Picked frame 1, ', framenum)
 
 		if intersectinglist != []:
 			crop.notintersecting = 0
-
-			if (crop.prevnearestbucket != nearestbucket) or (crop.length >= 125): # if new nearest bucket is different to the old one
-				newcrop = Cropobj(detection, path, filename, nearestbucket, crop.size, crop.centreleft, crop.centretop)
-
-				for overlapframe in crop.overlapframes:
-					newcrop.vidout.write(overlapframe)
-					newcrop.length += 1
-					if crop.length % args.sampling_freq < 6:
-						frame = Image.fromarray(cv2.cvtColor(orig_frame, cv2.COLOR_BGR2RGB))
-						crop.framesforrecognition.append(frame)
-						print('Picked frame, ', crop.length)
-
-							crops.remove(crop)
-							crops.append(newcrop) # Add to list of crops
 		else:
 			crop.notintersecting += 1
 			if crop.notintersecting >= maxnotintersecting:
 				crops.remove(crop)
-
-
 	else:
 		frame = Createcropstabilised(currentframe, crop.lastpos, bucketlist[framenum], [crop.centreleft,crop.centretop] , crop.size)
-		crop.vidout.write(frame)
 		if crop.length % args.sampling_freq < 6:
 			frame = Image.fromarray(cv2.cvtColor(frame, cv2.COLOR_BGR2RGB))
 			crop.framesforrecognition.append(frame)
-			print('Picked frame, ', crop.length)
+			crop.intersectingdetails.append([intersectinglist, intersectingdetails])
+			print('Picked frame 3, ', framenum)
 		#crop.vidout.write(Createcrop(currentframe, crop.lastpos, bucketlist[framenum]))
 		crop.missedframes += 1
 		if crop.missedframes >= maxmissedframes:
 			crops.remove(crop)
 	return
 
-def Run_detection(frames):
+def Run_detection(frames, action_label):
+	detected_action = ''
 	if len(frames) == args.delta*6:
 		frames = transform(frames).cuda()
 		scores_RGB = eval_video(frames[0:len(frames):6], 'RGB')[0,] 
@@ -328,15 +294,14 @@ def Run_detection(frames):
 			print('%-22s %0.2f'% (action_label[str(int(i))], final_scores[int(i)]))
 		print('<----------------->')
 		frames = []
-		crop.framesforrecognition = []
 	return detected_action
 
 
-def Detect(filename, path):
-	detfile = path + 'Tracked/sort' + filename + '.txt'
+def Detect(filename):
+	detfile = '../sort' + filename + '.txt'
 	
 	# Video to generate crops
-	cap = cv2.VideoCapture("/Users/James/OneDrive - Durham University/FYP/Baboon-Videos/" + filename + ".MP4")
+	cap = cv2.VideoCapture("../" + filename + ".MP4")
 	
 	# Get: the first frame each baboon appears in, and for each Frame: the baboon ID in the frame, their location, the bucket location in the frame. 
 	startframe, baboonlist, bucketlist = getdetectionbboxlists2(detfile)
@@ -344,8 +309,6 @@ def Detect(filename, path):
 	# Set the number of missed frames before a crop video stream is dropped
 	maxmissedframes = 15
 	maxnotintersecting = 60
-	
-	fourcc = cv2.VideoWriter_fourcc(*'mp4v') 
 	
 	# move to the correct point in the video stream
 	cap.set(cv2.CAP_PROP_POS_FRAMES, startframe)
@@ -362,20 +325,38 @@ def Detect(filename, path):
 
 			detections = np.asarray(detections)
 
-			Add_new_crops(crops, detections)
+			Add_new_crops(crops, detections, bucketlist, framenum)
 			
 			for crop in crops:
+				
+				Create_action_tubes(crop, crops, detections, bucketlist, framenum, currentframe, maxmissedframes, maxnotintersecting)
+				action = Run_detection(crop.framesforrecognition, action_label)
+				
+				if action == 'Taking_from_bucket':									
+					bucketdict = {}
+					for bucketdetails in crop.intersectingdetails:
+						for bucket in bucketdetails:
+							if bucket[0] not in bucketdict:
+								bucketdict[bucket[0]] = bucket[1]
+							else:
+								bucketdict[bucket[0]] = bucketdict[bucket[0]] + bucket[1]
+					BucketID = -1
+					maxintesect = 0
+					for key, value in bucketdict.items():
+						if value > maxintesect:
+							BucketID = key
+					print('Baboon ID:' + str(crop.ID))
+					print('Took from bucket:' + str(BucketID))
+					print('At frame number:' + str(startframe + framenum))
+					print('At time:' + str((startframe + framenum)/25) + 's')
 
-				Create_action_tubes(crop, detections)
-
-				action = Run_detection(crop.framesforrecognition)
-
-				if action == 'Taking_from_bucket':
-					print('taking from bucket')
+				if len(crop.framesforrecognition) == args.delta*6:
+					crop.framesforrecognition = []
+					crop.intersectingdetails = []
 
 	cap.release()
 	return
 			
 if __name__ == '__main__':
-	Detect(args.filename, args.path)
+	Detect(args.filename)
 	
