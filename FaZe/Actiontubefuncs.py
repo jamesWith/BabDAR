@@ -102,6 +102,7 @@ def convertbboxtopixeltopleft(bbox, imgwidth, imgheight): 	# input fraction of i
 
 
 def getbucketcrop(bucket, wholecrop, top, left, scale):
+	print(bucket)
 	bucleft = bucket[0]
 	buctop = bucket[1]
 	bucright = bucket[0] + bucket[2]
