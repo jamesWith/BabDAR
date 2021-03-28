@@ -25,6 +25,7 @@ parser.add_argument('filename',type=str)
 
 parser.add_argument('weights', nargs='+', type=str,
                     help='1st and 2nd index is RGB and RGBDiff weights respectively')
+parser.add_argument('--det_file_name', type=str, default='dettrack.txt')
 parser.add_argument('--arch', type=str, default="BNInception")
 parser.add_argument('--num_segments', type=int, default=8, help="Sliding Window Width")
 parser.add_argument('--sampling_freq', type=int, default=12, help="Take 1 image every 12 image")
@@ -298,10 +299,10 @@ def Run_detection(frames, action_label):
 
 
 def Detect(filename):
-	detfile = '../sort' + filename + '.txt'
+	detfile = args.det_file_name
 	
 	# Video to generate crops
-	cap = cv2.VideoCapture("../" + filename + ".MP4")
+	cap = cv2.VideoCapture(filename)
 	
 	# Get: the first frame each baboon appears in, and for each Frame: the baboon ID in the frame, their location, the bucket location in the frame. 
 	startframe, baboonlist, bucketlist = getdetectionbboxlists2(detfile)
