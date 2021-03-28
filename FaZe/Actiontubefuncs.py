@@ -93,13 +93,27 @@ def intersecting_area(detection, box):
 	return dist
 
 
-
 def convertbboxtopixeltopleft(bbox, imgwidth, imgheight): 	# input fraction of image[centre from left, from top, width, height]
 	left = (bbox[0]-bbox[2]/2)*imgwidth
 	width = bbox[2]*imgwidth
 	top = (bbox[1]-bbox[3]/2)*imgheight
 	height = bbox[3]*imgheight
 	return [left, top, width, height]
+
+
+def getbucketcrop(bucket, wholecrop, top, left, scale):
+	bucleft = bucket[0]
+	buctop = bucket[1]
+	bucbot = bucket[0] + bucket[2]
+	bucright = bucket[1] + bucket[3]
+	relleft = int((bucleft - left)/scale)
+	reltop = int((buctop - top)/scale)
+	relright = int((bucright - left)/scale)
+	relbot = int((bucbot - top)/scale)
+	bucketcrop = wholecrop[reltop:relbot, relleft:relright]
+	return bucketcrop
+
+
 
 
 def Createcrop(frame, baboon, intersectinglist): #bbox as [left, top, width, height, baboon ID] in pixels
@@ -169,5 +183,5 @@ def Createcropstabilised(frame, baboon, intersectinglist, centre, imgsize): #bbo
 	crop_frame = endframe[top:bottom, left:right]
 	crop_frame = cv2.resize(crop_frame, (cropsize, cropsize))
 
-	return crop_frame
+	return crop_frame, top, left, scale
 
