@@ -106,6 +106,7 @@ def getbucketcrop(bucket, wholecrop, top, left, scale):
 	buctop = bucket[1]
 	bucbot = bucket[0] + bucket[2]
 	bucright = bucket[1] + bucket[3]
+	print(buctop, bucbot, bucleft, bucright)
 	relleft = int((bucleft - left)/scale)
 	reltop = int((buctop - top)/scale)
 	relright = int((bucright - left)/scale)
