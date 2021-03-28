@@ -249,7 +249,7 @@ def Create_action_tubes(crop, crops, detections, bucketlist, framenum, currentfr
 		if crop.length % args.sampling_freq < 6:
 			frame = Image.fromarray(cv2.cvtColor(frame, cv2.COLOR_BGR2RGB))
 			crop.framesforrecognition.append(frame)
-			crop.intersectingdetails.append(bucketlist[framenum], top, left, scale)
+			crop.intersectingdetails.append([bucketlist[framenum], top, left, scale])
 			print('Picked frame 1, ', framenum)
 
 		if intersectinglist != []:
