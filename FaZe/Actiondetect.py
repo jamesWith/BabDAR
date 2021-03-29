@@ -347,6 +347,7 @@ def Detect(filename):
 							buc1 = getbucketcrop(bucket, preframes[frameinsegment])
 							buc2 = getbucketcrop(bucket, preframes[frameinsegment + 1])
 							rgbdiffbucket = np.abs(np.subtract(buc1.astype(np.int16), buc2.astype(np.int16)))
+							cv2.imwrite('/content/rgb'+ str(frameinsegment)+ str(framenum) + str(bucket[4]) +'.jpg', buc1) 
 							cv2.imwrite('/content/rgbdiff'+ str(frameinsegment)+ str(framenum) + str(bucket[4]) +'.jpg', rgbdiffbucket) 
 							movevalue = np.sum(rgbdiffbucket)
 							if bucket[4] not in bucketdict:
