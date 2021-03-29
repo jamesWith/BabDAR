@@ -77,7 +77,7 @@ def Intersecting(bbox1, bbox2): #bbox must be array in form [topleft distance fr
 	ct1 = bbox1[1] + (bbox1[3]/2)
 	cl2 = bbox2[0] + (bbox2[2]/2)
 	ct2 = bbox2[1] + (bbox2[3]/2)
-	if (abs(cl1-cl2) <= ((bbox1[2] + bbox2[2])/2)) and (abs(ct1-ct2) <= ((bbox1[3] + bbox2[3])/2)):
+	if (abs(cl1-cl2) <= (1.2*((bbox1[2] + bbox2[2])/2))) and (abs(ct1-ct2) <= (1.2*((bbox1[3] + bbox2[3])/2))):
 		return True
 	else:
 		return False
@@ -101,19 +101,13 @@ def convertbboxtopixeltopleft(bbox, imgwidth, imgheight): 	# input fraction of i
 	return [left, top, width, height]
 
 
-def getbucketcrop(bucket, wholecrop, top, left, scale):
+def getbucketcrop(bucket, frame):
 	print(bucket)
 	bucleft = bucket[0]
 	buctop = bucket[1]
 	bucright = bucket[0] + bucket[2]
 	bucbot = bucket[1] + bucket[3]
-	print(buctop, bucbot, bucleft, bucright)
-	relleft = min(max(int((bucleft - left)/scale),0), 64*4)
-	reltop = min(max(int((buctop - top)/scale),0), 64*4)
-	relright = min(max(int((bucright - left)/scale),0), 64*4)
-	relbot = min(max(int((bucbot - top)/scale),0), 64*4)
-	print(reltop, relbot, relleft, relright)
-	bucketcrop = np.asanyarray(wholecrop)[reltop:relbot, relleft:relright]
+	bucketcrop = np.asanyarray(frame)[buctop:bucbot, bucleft:bucright]
 	return bucketcrop
 
 

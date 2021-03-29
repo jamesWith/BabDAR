@@ -249,7 +249,7 @@ def Create_action_tubes(crop, crops, detections, bucketlist, framenum, currentfr
 		if crop.length % args.sampling_freq < 6:
 			frame = Image.fromarray(cv2.cvtColor(frame, cv2.COLOR_BGR2RGB))
 			crop.framesforrecognition.append(frame)
-			crop.intersectingdetails.append([bucketlist[framenum], top, left, scale])
+			crop.intersectingdetails.append(intersectinglist)
 			print('Picked frame 1, ', framenum)
 
 		if intersectinglist != []:
@@ -315,13 +315,17 @@ def Detect(filename):
 	cap.set(cv2.CAP_PROP_POS_FRAMES, startframe)
 
 	crops = []
+	preframes = []
 
 	action_label = label_dic(args.classInd_file)
 
 		# Start looking for the baboon at first frame it appears
 	for framenum, detections in enumerate(baboonlist[startframe::], start = startframe):
 		ret, currentframe = cap.read()
-	
+		preframes.append(currentframe)
+		if len(preframes) > 6:
+			preframes.pop(0)
+		
 		if detections != []: # if baboons are detected
 
 			detections = np.asarray(detections)
@@ -335,20 +339,20 @@ def Detect(filename):
 				
 				if action == 'Taking_from_bucket':									
 					bucketdict = {}
+
+					#scrap using the frames for recognition, will just have to save the whole frame
 					for frameinsegment, bucketdetails in enumerate(crop.intersectingdetails[:-1]): # for each frame in the 6 frame segment except last frame
-						nextbucketdetails = crop.intersectingdetails[frameinsegment + 1]
-						for bucket in bucketdetails[0]: # for each bucket in each frame
-							buc1 = getbucketcrop(bucket, crop.framesforrecognition[frameinsegment], bucketdetails[1], bucketdetails[2], bucketdetails[3])
-							buc2 = getbucketcrop(bucket, crop.framesforrecognition[frameinsegment + 1], nextbucketdetails[1], nextbucketdetails[2], nextbucketdetails[3])
+						for bucket in bucketdetails: # for each bucket in each frame
+							buc1 = getbucketcrop(bucket, preframes[frameinsegment])
+							buc2 = getbucketcrop(bucket, preframes[frameinsegment + 1])
 							rgbdiffbucket = np.abs(np.subtract(buc1.astype(np.int16), buc2.astype(np.int16)))
 							print(rgbdiffbucket)
-							if rgbdiffbucket.size != 0:
-								cv2.imwrite('/content/rgbdiff'+ str(framenum) + str(bucket[4]) +'.jpg', rgbdiffbucket) 
-								movevalue = np.sum(rgbdiffbucket)
-								if bucket[4] not in bucketdict:
-									bucketdict[bucket[4]] = movevalue
-								else:
-									bucketdict[bucket[4]] = bucketdict[bucket[4]] + movevalue #add up the total intersecting_area() over six frames
+							cv2.imwrite('/content/rgbdiff'+ str(framenum) + str(bucket[4]) +'.jpg', rgbdiffbucket) 
+							movevalue = np.sum(rgbdiffbucket)
+							if bucket[4] not in bucketdict:
+								bucketdict[bucket[4]] = movevalue
+							else:
+								bucketdict[bucket[4]] = bucketdict[bucket[4]] + movevalue #add up the total intersecting_area() over six frames
 					BucketID = -1
 					maxintesect = 0
 					for key, value in bucketdict.items():
@@ -362,6 +366,7 @@ def Detect(filename):
 				if len(crop.framesforrecognition) == args.delta*6:
 					crop.framesforrecognition = []
 					crop.intersectingdetails = []
+		preframe = currentframe
 
 
 	cap.release()
