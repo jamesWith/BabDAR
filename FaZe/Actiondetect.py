@@ -342,6 +342,7 @@ def Detect(filename):
 
 					#scrap using the frames for recognition, will just have to save the whole frame
 					for frameinsegment, bucketdetails in enumerate(crop.intersectingdetails[:-1]): # for each frame in the 6 frame segment except last frame
+						print(len(crop.intersectingdetails))
 						for bucket in bucketdetails: # for each bucket in each frame
 							buc1 = getbucketcrop(bucket, preframes[frameinsegment])
 							buc2 = getbucketcrop(bucket, preframes[frameinsegment + 1])
