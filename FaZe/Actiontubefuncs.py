@@ -127,9 +127,10 @@ def getbucketnumbers(bucketlist, cap):
 				cap.set(cv2.CAP_PROP_POS_FRAMES, framenum)
 				ret, currentframe = cap.read()
 				imShow(getbucketcrop(bucket, currentframe))
-				bucketnumber = input('Enter bucket number: ')
-				bucketcolour = input('Enter bucket colour: ')
-				bucketdict[bucket[4]] = bucketnumber + ' ' + bucketcolour
+				bucketnumber = input('Enter bucket number (if obscured press enter to move on: ')
+				if bucketnumber != '':
+					bucketcolour = input('Enter bucket colour: ')
+					bucketdict[bucket[4]] = bucketnumber + ' ' + bucketcolour
 	return bucketdict
 
 

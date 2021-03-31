@@ -340,7 +340,6 @@ def Detect(filename):
 						#scrap using the frames for recognition, will just have to save the whole frame
 						for frameinsegment, bucketdetails in enumerate(crop.intersectingdetails[:-1]): # for each frame in the 6 frame segment except last frame
 							for bucket in bucketdetails: # for each bucket in each frame
-								print(bucket)
 								buc1 = getbucketcrop(bucket, preframes[frameinsegment])
 								buc2 = getbucketcrop(bucket, preframes[frameinsegment + 1])
 								rgbdiffbucket = np.abs(np.subtract(buc1.astype(np.int16), buc2.astype(np.int16)))
