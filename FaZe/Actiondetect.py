@@ -369,7 +369,7 @@ def Detect(filename):
 					crop.intersectingdetails = []
 		preframe = currentframe
 
-
+	bucketdict = getbucketnumbers(bucketlist, cap)
 	cap.release()
 	return
 			

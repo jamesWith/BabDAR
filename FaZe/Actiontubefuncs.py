@@ -1,5 +1,6 @@
 import numpy as np
 import cv2
+from IPython.display import Image
 
 #def getlabelbboxlists(path, filename):
 #	bucketlist = []
@@ -108,6 +109,20 @@ def getbucketcrop(bucket, frame):
 	bucbot = bucket[1] + bucket[3]
 	bucketcrop = np.asanyarray(frame)[buctop:bucbot, bucleft:bucright]
 	return bucketcrop
+
+
+def getbucketnumbers(bucketlist, cap):
+	bucketdict = {}
+	for framenum, bucketperframe in enumerate(bucketlist):
+		for bucket in bucketperframe:
+			if bucket[4] not in bucketdict:
+				cap.set(cv2.CAP_PROP_POS_FRAMES, startframe)
+				ret, currentframe = cap.read()
+				Image(getbucketcrop(bucket, currentframe))
+				bucketnumber = input('Enter bucket number: ')
+				bucketcolour = input('Enter bucket colour: ')
+				bucketdict[bucket[4]] = bucketnumber + ' ' + bucketcolour
+	return bucketdict
 
 
 
