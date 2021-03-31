@@ -23,7 +23,7 @@ def imShow(image):
  	fig = plt.gcf()
  	fig.set_size_inches(6, 2)
  	plt.axis("off")
- 	plt.imshow(cv2.cvtColor(resized_image, cv2.COLOR_BGR2RGB))
+ 	plt.imshow(cv2.cvtColor(image, cv2.COLOR_BGR2RGB))
  	plt.show()
 
 
