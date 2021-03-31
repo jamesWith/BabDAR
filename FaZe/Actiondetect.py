@@ -372,12 +372,12 @@ def Detect(filename):
 			preframe = currentframe
 
 	bucketdict = getbucketnumbers(bucketlist, cap)
-	action_dets = np.loadtxt(detfile[:-9] + "action.txt" , delimiter=' ', dtype=int)
+	action_dets = np.loadtxt(detfile[:-9] + "action.txt" , delimiter=' ')
 	print(action_dets)
 	for action in action_dets:
-		if action[1] != '-1':
+		if int(action[1]) != '-1':
 			with open(detfile[:-9] + "action.txt", 'w') as out_file:
-				print(str(action[0]) + ',' + str(bucketdict[action[1]]) + ',' + str(action[2]), file=out_file)
+				print(str(int(action[0])) + ',' + str(int(bucketdict[action[1]])) + ',' + str(action[2]), file=out_file)
 
 	cap.release()
 	return
