@@ -120,7 +120,7 @@ def getbucketnumbers(bucketlist, cap):
 			print(3)
 			if bucket[4] not in bucketdict:
 				print(4)
-				cap.set(cv2.CAP_PROP_POS_FRAMES, startframe)
+				cap.set(cv2.CAP_PROP_POS_FRAMES, framenum)
 				ret, currentframe = cap.read()
 				Image(getbucketcrop(bucket, currentframe))
 				bucketnumber = input('Enter bucket number: ')
