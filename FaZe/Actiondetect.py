@@ -225,7 +225,6 @@ def Create_action_tubes(crop, crops, detections, bucketlist, framenum, currentfr
 
 	crop.length += 1
 	intersectinglist = []
-	intersectingdetails = []
 
 	detection = [detection for detection in detections if detection[4] == crop.ID] # Returns the the detection of the current crop
 	if detection != []:
@@ -246,12 +245,6 @@ def Create_action_tubes(crop, crops, detections, bucketlist, framenum, currentfr
 		
 		crop.lastpos = detection
 
-		if crop.length % args.sampling_freq < 6:
-			frame = Image.fromarray(cv2.cvtColor(frame, cv2.COLOR_BGR2RGB))
-			crop.framesforrecognition.append(frame)
-			crop.intersectingdetails.append(intersectinglist)
-			print('Picked frame 1, ', framenum)
-
 		if intersectinglist != []:
 			crop.notintersecting = 0
 		else:
@@ -260,15 +253,18 @@ def Create_action_tubes(crop, crops, detections, bucketlist, framenum, currentfr
 				crops.remove(crop)
 	else:
 		frame, top, left, scale = Createcropstabilised(currentframe, crop.lastpos, bucketlist[framenum], [crop.centreleft,crop.centretop] , crop.size)
-		if crop.length % args.sampling_freq < 6:
-			frame = Image.fromarray(cv2.cvtColor(frame, cv2.COLOR_BGR2RGB))
-			crop.framesforrecognition.append(frame)
-			crop.intersectingdetails.append([intersectinglist, intersectingdetails])
-			print('Picked frame 3, ', framenum)
-		#crop.vidout.write(Createcrop(currentframe, crop.lastpos, bucketlist[framenum]))
+		
 		crop.missedframes += 1
 		if crop.missedframes >= maxmissedframes:
 			crops.remove(crop)
+
+	if crop.length % args.sampling_freq < 6:
+		frame = Image.fromarray(cv2.cvtColor(frame, cv2.COLOR_BGR2RGB))
+		crop.framesforrecognition.append(frame)
+		crop.intersectingdetails.append(intersectinglist)
+		print('Picked frame, ', framenum)
+		#crop.vidout.write(Createcrop(currentframe, crop.lastpos, bucketlist[framenum]))
+		
 	return
 
 def Run_detection(frames, action_label):
