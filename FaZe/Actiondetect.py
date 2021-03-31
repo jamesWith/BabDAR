@@ -360,8 +360,8 @@ def Detect(filename):
 						for key, value in bucketdict.items():
 							if value > maxintesect:
 								BucketID = key # Bucket with the highest total is assigned the action
-						print('Baboon ID:' + str(crop.ID))
-						print('Took from bucket:' + str(BucketID))
+						print('Baboon ID:' + str(int(crop.ID)))
+						print('Took from bucket:' + str(int(BucketID)))
 						print('At frame number:' + str(startframe + framenum))
 						print('At time:' + str((startframe + framenum)/25) + 's')
 						print(str(crop.ID) + ' ' + str(BucketID) + ' ' + str((startframe + framenum)/25), file=out_file)
