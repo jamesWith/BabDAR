@@ -1,6 +1,7 @@
 import numpy as np
 import cv2
 from IPython.display import Image
+import matplotlib.pyplot as plt
 
 #def getlabelbboxlists(path, filename):
 #	bucketlist = []
@@ -17,6 +18,15 @@ from IPython.display import Image
 #					line.remove('0')
 #					baboonlist.append(line)
 #	return(baboonlist, bucketlist)
+
+def imShow(image):
+ 	%matplotlib inline
+ 	fig = plt.gcf()
+ 	fig.set_size_inches(6, 2)
+ 	plt.axis("off")
+ 	plt.imshow(cv2.cvtColor(resized_image, cv2.COLOR_BGR2RGB))
+ 	plt.show()
+
 
 
 def getdetectionbboxlists(path):
@@ -122,7 +132,7 @@ def getbucketnumbers(bucketlist, cap):
 				print(4)
 				cap.set(cv2.CAP_PROP_POS_FRAMES, framenum)
 				ret, currentframe = cap.read()
-				Image(getbucketcrop(bucket, currentframe))
+				imShow(getbucketcrop(bucket, currentframe))
 				bucketnumber = input('Enter bucket number: ')
 				bucketcolour = input('Enter bucket colour: ')
 				bucketdict[bucket[4]] = bucketnumber + ' ' + bucketcolour
