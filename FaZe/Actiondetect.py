@@ -373,6 +373,7 @@ def Detect(filename):
 
 	bucketdict = getbucketnumbers(bucketlist, cap)
 	action_dets = np.loadtxt(detfile[:-9] + "action.txt" , delimiter=',')
+	print(action_dets)
 	for action in action_dets:
 		if action[1] != '-1':
 			with open(detfile[:-9] + "action.txt", 'w') as out_file:
