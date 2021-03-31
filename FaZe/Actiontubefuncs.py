@@ -20,6 +20,7 @@ import matplotlib.pyplot as plt
 #	return(baboonlist, bucketlist)
 
 def imShow(image):
+	get_ipython().run_line_magic('matplotlib', 'inline')
  	plt.axis("off")
  	plt.imshow(cv2.cvtColor(image, cv2.COLOR_BGR2RGB))
  	plt.show()
