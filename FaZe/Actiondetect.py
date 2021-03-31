@@ -377,7 +377,7 @@ def Detect(filename):
 	for action in action_dets:
 		if int(action[1]) != '-1':
 			with open(detfile[:-9] + "action.txt", 'w') as out_file:
-				print(str(int(action[0])) + ',' + str(int(bucketdict[action[1]])) + ',' + str(action[2]), file=out_file)
+				print(action[0] + ',' + bucketdict[action[1]] + ',' + action[2], file=out_file)
 
 	cap.release()
 	return
