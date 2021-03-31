@@ -319,57 +319,57 @@ def Detect(filename):
 
 	action_label = label_dic(args.classInd_file)
 
-		# Start looking for the baboon at first frame it appears
-	for framenum, detections in enumerate(baboonlist[startframe::], start = startframe):
-		ret, currentframe = cap.read()
-		preframes.append(currentframe)
-		if len(preframes) > 6:
-			preframes.pop(0)
-		
-		if detections != []: # if baboons are detected
-
-			detections = np.asarray(detections)
-
-			Add_new_crops(crops, detections, bucketlist, framenum)
+	with open(detfile[:-9] + "action.txt", 'w') as out_file:
+			# Start looking for the baboon at first frame it appears
+		for framenum, detections in enumerate(baboonlist[startframe::], start = startframe):
+			ret, currentframe = cap.read()
+			preframes.append(currentframe)
+			if len(preframes) > 6:
+				preframes.pop(0)
 			
-			for crop in crops:
+			if detections != []: # if baboons are detected
+	
+				detections = np.asarray(detections)
+	
+				Add_new_crops(crops, detections, bucketlist, framenum)
 				
-				Create_action_tubes(crop, crops, detections, bucketlist, framenum, currentframe, maxmissedframes, maxnotintersecting)
-				action = Run_detection(crop.framesforrecognition, action_label)
-				
-				if action == 'Taking_from_bucket':									
-					bucketdict = {}
-
-					#scrap using the frames for recognition, will just have to save the whole frame
-					for frameinsegment, bucketdetails in enumerate(crop.intersectingdetails[:-1]): # for each frame in the 6 frame segment except last frame
-						print(len(crop.intersectingdetails))
-						for bucket in bucketdetails: # for each bucket in each frame
-							buc1 = getbucketcrop(bucket, preframes[frameinsegment])
-							buc2 = getbucketcrop(bucket, preframes[frameinsegment + 1])
-							rgbdiffbucket = np.abs(np.subtract(buc1.astype(np.int16), buc2.astype(np.int16)))
-							#cv2.imwrite('/content/rgb'+ str(frameinsegment)+ str(framenum) + str(bucket[4]) +'.jpg', buc1) 
-							#cv2.imwrite('/content/rgbdiff'+ str(frameinsegment)+ str(framenum) + str(bucket[4]) +'.jpg', rgbdiffbucket) 
-							movevalue = np.mean(rgbdiffbucket)
-							if bucket[4] not in bucketdict:
-								bucketdict[bucket[4]] = movevalue
-							else:
-								bucketdict[bucket[4]] = bucketdict[bucket[4]] + movevalue #add up the total intersecting_area() over six frames
-					BucketID = -1
-					maxintesect = 0
-					for key, value in bucketdict.items():
-						if value > maxintesect:
-							BucketID = key # Bucket with the highest total is assigned the action
-					print('Baboon ID:' + str(crop.ID))
-					print('Took from bucket:' + str(BucketID))
-					print('At frame number:' + str(startframe + framenum))
-					print('At time:' + str((startframe + framenum)/25) + 's')
-					with open(detfile[:-9] + "action.txt", 'w') as out_file:
+				for crop in crops:
+					
+					Create_action_tubes(crop, crops, detections, bucketlist, framenum, currentframe, maxmissedframes, maxnotintersecting)
+					action = Run_detection(crop.framesforrecognition, action_label)
+					
+					if action == 'Taking_from_bucket':									
+						bucketdict = {}
+	
+						#scrap using the frames for recognition, will just have to save the whole frame
+						for frameinsegment, bucketdetails in enumerate(crop.intersectingdetails[:-1]): # for each frame in the 6 frame segment except last frame
+							print(len(crop.intersectingdetails))
+							for bucket in bucketdetails: # for each bucket in each frame
+								buc1 = getbucketcrop(bucket, preframes[frameinsegment])
+								buc2 = getbucketcrop(bucket, preframes[frameinsegment + 1])
+								rgbdiffbucket = np.abs(np.subtract(buc1.astype(np.int16), buc2.astype(np.int16)))
+								#cv2.imwrite('/content/rgb'+ str(frameinsegment)+ str(framenum) + str(bucket[4]) +'.jpg', buc1) 
+								#cv2.imwrite('/content/rgbdiff'+ str(frameinsegment)+ str(framenum) + str(bucket[4]) +'.jpg', rgbdiffbucket) 
+								movevalue = np.mean(rgbdiffbucket)
+								if bucket[4] not in bucketdict:
+									bucketdict[bucket[4]] = movevalue
+								else:
+									bucketdict[bucket[4]] = bucketdict[bucket[4]] + movevalue #add up the total intersecting_area() over six frames
+						BucketID = -1
+						maxintesect = 0
+						for key, value in bucketdict.items():
+							if value > maxintesect:
+								BucketID = key # Bucket with the highest total is assigned the action
+						print('Baboon ID:' + str(crop.ID))
+						print('Took from bucket:' + str(BucketID))
+						print('At frame number:' + str(startframe + framenum))
+						print('At time:' + str((startframe + framenum)/25) + 's')
 						print(str(crop.ID) + ',' + str(BucketID) + ',' + str((startframe + framenum)/25), file=out_file)
-
-				if len(crop.framesforrecognition) == args.delta*6:
-					crop.framesforrecognition = []
-					crop.intersectingdetails = []
-		preframe = currentframe
+	
+					if len(crop.framesforrecognition) == args.delta*6:
+						crop.framesforrecognition = []
+						crop.intersectingdetails = []
+			preframe = currentframe
 
 	bucketdict = getbucketnumbers(bucketlist, cap)
 	action_dets = np.loadtxt(detfile[:-9] + "action.txt" , delimiter=',')
