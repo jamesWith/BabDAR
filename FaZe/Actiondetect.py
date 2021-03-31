@@ -363,6 +363,8 @@ def Detect(filename):
 					print('Took from bucket:' + str(BucketID))
 					print('At frame number:' + str(startframe + framenum))
 					print('At time:' + str((startframe + framenum)/25) + 's')
+					with open(detfile[:-9] + "action.txt", 'w') as out_file:
+						print(str(crop.ID) + ',' + str(BucketID) + ',' + str((startframe + framenum)/25), file=out_file)
 
 				if len(crop.framesforrecognition) == args.delta*6:
 					crop.framesforrecognition = []
@@ -370,6 +372,12 @@ def Detect(filename):
 		preframe = currentframe
 
 	bucketdict = getbucketnumbers(bucketlist, cap)
+	action_dets = np.loadtxt(detfile[:-9] + "action.txt" , delimiter=',')
+	for action in action_dets:
+		if action[1] != '-1':
+			with open(detfile[:-9] + "action.txt", 'w') as out_file:
+				print(str(action[0]) + ',' + str(bucketdict[action[1]]) + ',' + str(action[2]), file=out_file)
+
 	cap.release()
 	return
 			

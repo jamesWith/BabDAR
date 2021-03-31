@@ -121,13 +121,9 @@ def getbucketcrop(bucket, frame):
 
 def getbucketnumbers(bucketlist, cap):
 	bucketdict = {}
-	print(1)
 	for framenum, bucketperframe in enumerate(bucketlist):
-		print(2)
 		for bucket in bucketperframe:
-			print(3)
 			if bucket[4] not in bucketdict:
-				print(4)
 				cap.set(cv2.CAP_PROP_POS_FRAMES, framenum)
 				ret, currentframe = cap.read()
 				imShow(getbucketcrop(bucket, currentframe))
