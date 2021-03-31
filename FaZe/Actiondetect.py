@@ -372,7 +372,7 @@ def Detect(filename):
 			preframe = currentframe
 
 	bucketdict = getbucketnumbers(bucketlist, cap)
-	action_dets = np.loadtxt(detfile[:-9] + "action.txt" , delimiter=' ')
+	action_dets = np.loadtxt(detfile[:-9] + "action.txt" , delimiter=' ', dtype=str)
 	print(action_dets)
 	for action in action_dets:
 		if int(action[1]) != '-1':
