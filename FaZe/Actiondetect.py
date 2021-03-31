@@ -364,7 +364,7 @@ def Detect(filename):
 						print('Took from bucket:' + str(int(BucketID)))
 						print('At frame number:' + str(startframe + framenum))
 						print('At time:' + str((startframe + framenum)/25) + 's')
-						print(str(crop.ID) + ' ' + str(BucketID) + ' ' + str((startframe + framenum)/25), file=out_file)
+						print(str(int(crop.ID)) + ' ' + str(int(BucketID)) + ' ' + str((startframe + framenum)/25), file=out_file)
 	
 					if len(crop.framesforrecognition) == args.delta*6:
 						crop.framesforrecognition = []
