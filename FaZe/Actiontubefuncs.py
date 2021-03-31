@@ -20,7 +20,6 @@ import matplotlib.pyplot as plt
 #	return(baboonlist, bucketlist)
 
 def imShow(image):
- 	%matplotlib inline
  	fig = plt.gcf()
  	fig.set_size_inches(6, 2)
  	plt.axis("off")
