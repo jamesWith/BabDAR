@@ -360,11 +360,11 @@ def Detect(filename):
 						for key, value in bucketdict.items():
 							if value > maxintesect:
 								BucketID = key # Bucket with the highest total is assigned the action
-						print('Baboon ID:' + str(int(crop.ID)))
-						print('Took from bucket:' + str(int(BucketID)))
+						print('Baboon ID:' + str(crop.ID))
+						print('Took from bucket:' + str(BucketID))
 						print('At frame number:' + str(startframe + framenum))
 						print('At time:' + str((startframe + framenum)/25) + 's')
-						print(str(int(crop.ID)) + ' ' + str(int(BucketID)) + ' ' + str((startframe + framenum)/25), file=out_file)
+						print(str(crop.ID) + ' ' + str(BucketID) + ' ' + str((startframe + framenum)/25), file=out_file)
 	
 					if len(crop.framesforrecognition) == args.delta*6:
 						crop.framesforrecognition = []
@@ -372,7 +372,7 @@ def Detect(filename):
 			preframe = currentframe
 
 	bucketdict = getbucketnumbers(bucketlist, cap)
-	action_dets = np.loadtxt(detfile[:-9] + "action.txt" , delimiter=' ')
+	action_dets = np.loadtxt(detfile[:-9] + "action.txt" , delimiter=' ', dtype=int)
 	print(action_dets)
 	for action in action_dets:
 		if action[1] != '-1':
