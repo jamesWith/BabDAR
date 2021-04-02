@@ -87,7 +87,7 @@ def Intersecting(bbox1, bbox2): #bbox must be array in form [topleft distance fr
 	ct1 = bbox1[1] + (bbox1[3]/2)
 	cl2 = bbox2[0] + (bbox2[2]/2)
 	ct2 = bbox2[1] + (bbox2[3]/2)
-	if (abs(cl1-cl2) <= (1.2*((bbox1[2] + bbox2[2])/2))) and (abs(ct1-ct2) <= (1.2*((bbox1[3] + bbox2[3])/2))):
+	if (abs(cl1-cl2) <= (((bbox1[2] + bbox2[2])/2))) and (abs(ct1-ct2) <= (((bbox1[3] + bbox2[3])/2))):
 		return True
 	else:
 		return False
@@ -131,7 +131,7 @@ def getbucketnumbers(bucketlist, cap):
 					ret, currentframe = cap.read()
 					imShow(getbucketcrop(bucket, currentframe))
 					time.sleep(1)
-					bucketnumber = input('Enter bucket number (if obscured press enter to move on: ')
+					bucketnumber = input('Enter bucket number (if obscured press enter to move on): ')
 					if bucketnumber != '':
 						bucketcolour = input('Enter bucket colour: ')
 						bucketdict[bucket[4]] = bucketnumber + ' ' + bucketcolour

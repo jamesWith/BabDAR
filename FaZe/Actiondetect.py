@@ -286,7 +286,8 @@ def Run_detection(frames, action_label):
 		#action_checker = True
 		if not action_checker:
 			print('No Assigned Action')
-		detected_action = action_label[str(int(scores_indcies[0]))]
+		else:
+			detected_action = action_label[str(int(scores_indcies[0]))]
 		for i in scores_indcies[:2]:
 			print('%-22s %0.2f'% (action_label[str(int(i))], final_scores[int(i)]))
 		print('<----------------->')
@@ -337,7 +338,6 @@ def Detect(filename):
 					if action == 'Taking_from_bucket':									
 						bucketdict = {}
 	
-						#scrap using the frames for recognition, will just have to save the whole frame
 						for frameinsegment, bucketdetails in enumerate(crop.intersectingdetails[:-1]): # for each frame in the 6 frame segment except last frame
 							for bucket in bucketdetails: # for each bucket in each frame
 								buc1 = getbucketcrop(bucket, preframes[frameinsegment])
