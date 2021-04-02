@@ -260,7 +260,7 @@ def Create_action_tubes(crop, crops, detections, bucketlist, framenum, currentfr
 		frame = Image.fromarray(cv2.cvtColor(frame, cv2.COLOR_BGR2RGB))
 		crop.framesforrecognition.append(frame)
 		crop.intersectingdetails.append(bucketdetails)
-		print('Picked frame, ', framenum)
+		#print('Picked frame, ', framenum)
 		#crop.vidout.write(Createcrop(currentframe, crop.lastpos, bucketlist[framenum]))
 		
 	return
@@ -286,9 +286,9 @@ def Run_detection(frames, action_label):
 			print('No Assigned Action')
 		else:
 			detected_action = action_label[str(int(scores_indcies[0]))]
-		for i in scores_indcies[:2]:
+		#for i in scores_indcies[:2]:
 			print('%-22s %0.2f'% (action_label[str(int(i))], final_scores[int(i)]))
-		print('<----------------->')
+		#print('<----------------->')
 		frames = []
 	return detected_action
 
@@ -343,15 +343,19 @@ def Detect(filename):
 								rgbdiffbucket = np.abs(np.subtract(buc1.astype(np.int16), buc2.astype(np.int16)))
 								movevalue = np.mean(rgbdiffbucket)
 								distvalue = bucket[1]
+								if distvalue==0:
+									distvalue = 1
 								score = movevalue/distvalue
+								print(movevalue, distvalue, score, )
 								if bucket[0][4] not in bucketdict:
 									bucketdict[bucket[0][4]] = score
 								else:
 									bucketdict[bucket[0][4]] = bucketdict[bucket[0][4]] + score #add up the total intersecting_area() over six frames
 						BucketID = -1
-						maxintesect = 0
+						maxscore = 0
+						print(bucketdict)
 						for key, value in bucketdict.items():
-							if value > maxintesect:
+							if value > maxscore:
 								BucketID = key # Bucket with the highest total is assigned the action
 						print('Baboon ID:' + str(crop.ID))
 						print('Took from bucket:' + str(BucketID))
@@ -365,6 +369,7 @@ def Detect(filename):
 			preframe = currentframe
 
 	bucketdict = getbucketnumbers(bucketlist, cap)
+	print(bucketdict)
 	action_dets = np.loadtxt(detfile[:-9] + "action.txt" , delimiter=' ', dtype=str)
 	bucketcolourdict = {}
 	baboonvisitnumber = {}
