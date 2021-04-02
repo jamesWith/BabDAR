@@ -345,8 +345,7 @@ def Detect(filename):
 								distvalue = bucket[1]
 								if distvalue==0:
 									distvalue = 1
-								score = movevalue/distvalue
-								print(movevalue, distvalue, score, )
+								score = 1/distvalue
 								if bucket[0][4] not in bucketdict:
 									bucketdict[bucket[0][4]] = score
 								else:
