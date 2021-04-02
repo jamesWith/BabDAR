@@ -129,7 +129,7 @@ def getbucketnumbers(bucketlist, cap):
 				ret, currentframe = cap.read()
 				imShow(getbucketcrop(bucket, currentframe))
 				print('\n\n\n\n\n\n\n\n\n\n')
-				time.sleep(1)
+				time.sleep(4)
 				bucketnumber = input('Enter bucket number (if obscured press enter to move on: ')
 				if bucketnumber != '':
 					bucketcolour = input('Enter bucket colour: ')
