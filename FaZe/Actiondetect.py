@@ -357,6 +357,7 @@ def Detect(filename):
 						for key, value in bucketdict.items():
 							if value < minscore:
 								BucketID = key # Bucket with the highest total is assigned the action
+								print(key, bucketdict[key])
 						print('Baboon ID:' + str(crop.ID))
 						print('Took from bucket:' + str(BucketID))
 						print('At frame number:' + str(startframe + framenum))
