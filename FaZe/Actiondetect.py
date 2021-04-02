@@ -343,6 +343,7 @@ def Detect(filename):
 								rgbdiffbucket = np.abs(np.subtract(buc1.astype(np.int16), buc2.astype(np.int16)))
 								movevalue = np.mean(rgbdiffbucket)
 								distvalue = bucket[1]
+								print(distvalue)
 								if distvalue==0:
 									distvalue = 1
 								score = 1/distvalue
