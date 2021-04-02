@@ -287,7 +287,7 @@ def Run_detection(frames, action_label):
 		else:
 			detected_action = action_label[str(int(scores_indcies[0]))]
 		#for i in scores_indcies[:2]:
-			print('%-22s %0.2f'% (action_label[str(int(i))], final_scores[int(i)]))
+			#print('%-22s %0.2f'% (action_label[str(int(i))], final_scores[int(i)]))
 		#print('<----------------->')
 		frames = []
 	return detected_action
