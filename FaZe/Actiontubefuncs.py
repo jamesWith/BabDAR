@@ -122,21 +122,24 @@ def getbucketcrop(bucket, frame):
 
 def getbucketnumbers(bucketlist, cap):
 	bucketdict = {}
+	bucketwait = {}
 	for framenum, bucketperframe in enumerate(bucketlist):
 		for bucket in bucketperframe:
 			if bucket[4] not in bucketdict:
-				cap.set(cv2.CAP_PROP_POS_FRAMES, framenum)
-				ret, currentframe = cap.read()
-				imShow(getbucketcrop(bucket, currentframe))
-				print('is')
-				print('this')
-				print('printed')
-				print('anyway')
-				time.sleep(4)
-				bucketnumber = input('Enter bucket number (if obscured press enter to move on: ')
-				if bucketnumber != '':
-					bucketcolour = input('Enter bucket colour: ')
-					bucketdict[bucket[4]] = bucketnumber + ' ' + bucketcolour
+				if (bucket[4] not in bucketwait) or (bucketwait[bucket[4]]==0):
+					cap.set(cv2.CAP_PROP_POS_FRAMES, framenum)
+					ret, currentframe = cap.read()
+					imShow(getbucketcrop(bucket, currentframe))
+					time.sleep(1)
+					bucketnumber = input('Enter bucket number (if obscured press enter to move on: ')
+					if bucketnumber != '':
+						bucketcolour = input('Enter bucket colour: ')
+						bucketdict[bucket[4]] = bucketnumber + ' ' + bucketcolour
+					else:
+						bucketwait[bucket[4]] = 25
+				else:
+					bucketwait[bucket[4]]=bucketwait[bucket[4]]-1
+
 	return bucketdict
 
 

@@ -371,10 +371,10 @@ def Detect(filename):
 	bucketcolourdict = {}
 	baboonvisitnumber = {}
 	with open(detfile[:-9] + "action.txt", 'w') as out_file:
-		print('PAIR, INDIV, PREF, TIME, VISIT N')
+		print('PAIR, INDIV, PREF, TIME, VISIT N', file=out_file)
 		for action in action_dets:
 			if bucketdict[int(action[1])].split()[1] not in bucketcolourdict:
-				bucketcolourdict[bucketdict[int(action[1])].split()[1]] = input('What is the contents of ' + bucketdict[int(action[1])].split()[1] + 'buckets?')
+				bucketcolourdict[bucketdict[int(action[1])].split()[1]] = input('What is the contents of ' + bucketdict[int(action[1])].split()[1] + ' buckets?')
 			if action[0] not in baboonvisitnumber:
 				baboonvisitnumber[action[0]] = 1
 			else:
