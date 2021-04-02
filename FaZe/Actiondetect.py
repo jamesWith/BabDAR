@@ -368,10 +368,19 @@ def Detect(filename):
 
 	bucketdict = getbucketnumbers(bucketlist, cap)
 	action_dets = np.loadtxt(detfile[:-9] + "action.txt" , delimiter=' ', dtype=str)
+	bucketcolourdict = {}
+	baboonvisitnumber = {}
 	with open(detfile[:-9] + "action.txt", 'w') as out_file:
+		print('PAIR, INDIV, PREF, TIME, VISIT N')
 		for action in action_dets:
+			if bucketdict[int(action[1])].split()[1] not in bucketcolourdict:
+				bucketcolourdict[bucketdict[int(action[1])].split()[1]] = input('What is the contents of ' + bucketdict[int(action[1])].split()[1] + 'buckets?')
+			if action[0] not in baboonvisitnumber:
+				baboonvisitnumber[action[0]] = 1
+			else:
+				baboonvisitnumber[action[0]] = baboonvisitnumber[action[0]] + 1
 			if action[1] != '-1':
-				print(action[0] + ',' + bucketdict[int(action[1])] + ',' + action[2], file=out_file)
+				print(bucketdict[int(action[1])].split()[0] + ',' + action[0]+ ','+ bucketcolourdict[bucketdict[int(action[1])].split()[1]] + ',' + action[2] + ',' + str(baboonvisitnumber[action[0]]), file=out_file)
 
 	cap.release()
 	return
