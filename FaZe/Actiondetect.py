@@ -352,12 +352,13 @@ def Detect(filename):
 								else:
 									bucketdict[bucket[0][4]] = bucketdict[bucket[0][4]] + score #add up the total intersecting_area() over six frames
 						BucketID = -1
-						maxscore = 1080
+						minscore = 1080
 						print(bucketdict)
 						for key, value in bucketdict.items():
 							if value < minscore:
 								BucketID = key # Bucket with the highest total is assigned the action
-								print(key, bucketdict[key])
+								minscore = value
+								print(key, value)
 						print('Baboon ID:' + str(crop.ID))
 						print('Took from bucket:' + str(BucketID))
 						print('At frame number:' + str(startframe + framenum))
