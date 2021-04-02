@@ -225,14 +225,12 @@ def Create_action_tubes(crop, crops, detections, bucketlist, framenum, currentfr
 
 	crop.length += 1
 	intersectinglist = []
+	bucketdetails = []
 
 	detection = [detection for detection in detections if detection[4] == crop.ID] # Returns the the detection of the current crop
 	if detection != []:
 		detection = detection[0]
-
-		intersectinglist = []
-		bucketdetails = []
-
+		
 		for bucket in bucketlist[framenum]:
 			if Intersecting(detection, bucket): # Find if the baboon is intesecting any buckets
 				intersectinglist.append(bucket)
