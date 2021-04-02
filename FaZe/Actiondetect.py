@@ -343,7 +343,7 @@ def Detect(filename):
 								rgbdiffbucket = np.abs(np.subtract(buc1.astype(np.int16), buc2.astype(np.int16)))
 								movevalue = np.mean(rgbdiffbucket)
 								distvalue = bucket[1]
-								score = movevalue*distvalue
+								score = movevalue/distvalue
 								if bucket[0][4] not in bucketdict:
 									bucketdict[bucket[0][4]] = score
 								else:
