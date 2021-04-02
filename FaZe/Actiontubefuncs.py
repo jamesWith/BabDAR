@@ -87,7 +87,7 @@ def Intersecting(bbox1, bbox2): #bbox must be array in form [topleft distance fr
 	ct1 = bbox1[1] + (bbox1[3]/2)
 	cl2 = bbox2[0] + (bbox2[2]/2)
 	ct2 = bbox2[1] + (bbox2[3]/2)
-	if (abs(cl1-cl2) <= (((bbox1[2] + bbox2[2])/2))) and (abs(ct1-ct2) <= (((bbox1[3] + bbox2[3])/2))):
+	if (abs(cl1-cl2) <= (1.2*((bbox1[2] + bbox2[2])/2))) and (abs(ct1-ct2) <= (1.2*((bbox1[3] + bbox2[3])/2))):
 		return True
 	else:
 		return False
@@ -98,8 +98,8 @@ def intersecting_area(detection, box):
 	detright = detection[0] + detection[2]
 	boxbottom = box[1] + box[3]
 	boxcentre = box[0] + box[2]/2
-	dist = min(calcdistance([detleft, detbottom], [boxcentre, boxbottom]),calcdistance([detright, detbottom], [boxcentre, boxbottom]))
-
+	xdist = max(detleft-boxcentre, 0, boxcentre - detright)
+	dist = calcdistance([0, detbottom], [xdist, boxbottom])
 	return dist
 
 
@@ -121,7 +121,7 @@ def getbucketcrop(bucket, frame):
 
 
 def getbucketnumbers(bucketlist, cap):
-	bucketdict = {}
+	bucketdict = {-1: "-1"}
 	bucketwait = {}
 	for framenum, bucketperframe in enumerate(bucketlist):
 		for bucket in bucketperframe:

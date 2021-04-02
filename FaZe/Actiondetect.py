@@ -236,7 +236,7 @@ def Create_action_tubes(crop, crops, detections, bucketlist, framenum, currentfr
 		for bucket in bucketlist[framenum]:
 			if Intersecting(detection, bucket): # Find if the baboon is intesecting any buckets
 				intersectinglist.append(bucket)
-			bucketdetails.append([bucket[4], intersecting_area(detection, bucket)])
+				bucketdetails.append([bucket, intersecting_area(detection, bucket)])
 
 		crop.centreleft += (centre(detection)[0] - crop.centreleft)*0.1
 		crop.centretop += (centre(detection)[1] - crop.centretop)*0.1
@@ -261,7 +261,7 @@ def Create_action_tubes(crop, crops, detections, bucketlist, framenum, currentfr
 	if crop.length % args.sampling_freq < 6:
 		frame = Image.fromarray(cv2.cvtColor(frame, cv2.COLOR_BGR2RGB))
 		crop.framesforrecognition.append(frame)
-		crop.intersectingdetails.append(intersectinglist)
+		crop.intersectingdetails.append(bucketdetails)
 		print('Picked frame, ', framenum)
 		#crop.vidout.write(Createcrop(currentframe, crop.lastpos, bucketlist[framenum]))
 		
@@ -340,16 +340,16 @@ def Detect(filename):
 	
 						for frameinsegment, bucketdetails in enumerate(crop.intersectingdetails[:-1]): # for each frame in the 6 frame segment except last frame
 							for bucket in bucketdetails: # for each bucket in each frame
-								buc1 = getbucketcrop(bucket, preframes[frameinsegment])
-								buc2 = getbucketcrop(bucket, preframes[frameinsegment + 1])
+								buc1 = getbucketcrop(bucket[0], preframes[frameinsegment])
+								buc2 = getbucketcrop(bucket[0], preframes[frameinsegment + 1])
 								rgbdiffbucket = np.abs(np.subtract(buc1.astype(np.int16), buc2.astype(np.int16)))
-								#cv2.imwrite('/content/rgb'+ str(frameinsegment)+ str(framenum) + str(bucket[4]) +'.jpg', buc1) 
-								#cv2.imwrite('/content/rgbdiff'+ str(frameinsegment)+ str(framenum) + str(bucket[4]) +'.jpg', rgbdiffbucket) 
 								movevalue = np.mean(rgbdiffbucket)
-								if bucket[4] not in bucketdict:
-									bucketdict[bucket[4]] = movevalue
+								distvalue = bucket[1]
+								score = movevalue*distvalue
+								if bucket[0][4] not in bucketdict:
+									bucketdict[bucket[0][4]] = score
 								else:
-									bucketdict[bucket[4]] = bucketdict[bucket[4]] + movevalue #add up the total intersecting_area() over six frames
+									bucketdict[bucket[0][4]] = bucketdict[bucket[0][4]] + score #add up the total intersecting_area() over six frames
 						BucketID = -1
 						maxintesect = 0
 						for key, value in bucketdict.items():
