@@ -343,21 +343,21 @@ def Detect(filename):
 								rgbdiffbucket = np.abs(np.subtract(buc1.astype(np.int16), buc2.astype(np.int16)))
 								movevalue = np.mean(rgbdiffbucket)
 								distvalue = bucket[1]
-								print(distvalue, bucket[0][4])
+								print(1/distvalue, bucket[0][4])
 								if distvalue==0:
 									distvalue = 1
-								score = distvalue
+								score = 1/distvalue
 								if bucket[0][4] not in bucketdict:
 									bucketdict[bucket[0][4]] = score
 								else:
 									bucketdict[bucket[0][4]] = bucketdict[bucket[0][4]] + score #add up the total intersecting_area() over six frames
 						BucketID = -1
-						minscore = 1080
+						maxscore = 0
 						print(bucketdict)
 						for key, value in bucketdict.items():
-							if value < minscore:
+							if value > maxscore:
 								BucketID = key # Bucket with the highest total is assigned the action
-								minscore = value
+								maxscore = value
 								print(key, value)
 						print('Baboon ID:' + str(crop.ID))
 						print('Took from bucket:' + str(BucketID))
