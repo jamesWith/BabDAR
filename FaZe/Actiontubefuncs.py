@@ -2,6 +2,7 @@ import numpy as np
 import cv2
 from IPython.display import Image
 import matplotlib.pyplot as plt
+import time
 
 #def getlabelbboxlists(path, filename):
 #	bucketlist = []
@@ -127,6 +128,8 @@ def getbucketnumbers(bucketlist, cap):
 				cap.set(cv2.CAP_PROP_POS_FRAMES, framenum)
 				ret, currentframe = cap.read()
 				imShow(getbucketcrop(bucket, currentframe))
+				print('\n\n\n\n\n\n\n\n\n\n')
+				time.sleep(1)
 				bucketnumber = input('Enter bucket number (if obscured press enter to move on: ')
 				if bucketnumber != '':
 					bucketcolour = input('Enter bucket colour: ')
