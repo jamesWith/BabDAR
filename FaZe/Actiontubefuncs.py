@@ -128,7 +128,10 @@ def getbucketnumbers(bucketlist, cap):
 				cap.set(cv2.CAP_PROP_POS_FRAMES, framenum)
 				ret, currentframe = cap.read()
 				imShow(getbucketcrop(bucket, currentframe))
-				print('\n\n\n\n\n\n\n\n\n\n')
+				print('is')
+				print('this')
+				print('printed')
+				print('anyway')
 				time.sleep(4)
 				bucketnumber = input('Enter bucket number (if obscured press enter to move on: ')
 				if bucketnumber != '':
