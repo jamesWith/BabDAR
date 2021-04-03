@@ -339,7 +339,7 @@ def Detect(filename):
 						bucketdict = {}
 						#for i in scores_indcies[:2]:
 						#	print('%-22s %0.2f'% (action_label[str(int(i))], final_scores[int(i)]))
-						if startframe + framenum == 188:
+						if startframe + framenum == 1889:
 							for count, item in enumerate(crop.framesforrecognition):
 								image = np.array(item)
 								cv2.imwrite(str(startframe + framenum + count) + '.jpg', image)
