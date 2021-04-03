@@ -287,7 +287,7 @@ def Run_detection(frames, action_label, ID):
 		else:
 			detected_action = action_label[str(int(scores_indcies[0]))]
 		for i in scores_indcies[:2]:
-			print('%-22s  RGB:%0.2f  RGBdiff:'% (action_label[str(int(i))], scores_RGB[int(i)], scores_RGBDiff[int(i)]))
+			print('%-22s  RGB:%0.2f  RGBdiff:%0.2f'% (action_label[str(int(i))], scores_RGB[int(i)], scores_RGBDiff[int(i)]))
 		print('Baboon ID:' + str(ID))
 		print('<----------------->')
 		frames = []
