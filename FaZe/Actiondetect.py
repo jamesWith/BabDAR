@@ -265,7 +265,7 @@ def Create_action_tubes(crop, crops, detections, bucketlist, framenum, currentfr
 		
 	return
 
-def Run_detection(frames, action_label):
+def Run_detection(frames, action_label, ID):
 	detected_action = ''
 	if len(frames) == args.delta*6:
 		frames = transform(frames).cuda()
@@ -288,6 +288,7 @@ def Run_detection(frames, action_label):
 			detected_action = action_label[str(int(scores_indcies[0]))]
 		for i in scores_indcies[:2]:
 			print('%-22s %0.2f'% (action_label[str(int(i))], final_scores[int(i)]))
+		print('Baboon ID:' + str(ID))
 		#print('<----------------->')
 		frames = []
 		return scores_indcies, final_scores, detected_action
@@ -332,7 +333,7 @@ def Detect(filename):
 				for crop in crops:
 					
 					Create_action_tubes(crop, crops, detections, bucketlist, framenum, currentframe, maxmissedframes, maxnotintersecting)
-					scores_indcies, final_scores, action = Run_detection(crop.framesforrecognition, action_label)
+					scores_indcies, final_scores, action = Run_detection(crop.framesforrecognition, action_label, crop.ID)
 					
 					if action == 'Taking_from_bucket':									
 						bucketdict = {}
@@ -360,15 +361,12 @@ def Detect(filename):
 							if value > maxscore:
 								BucketID = key # Bucket with the highest total is assigned the action
 								maxscore = value
-						print('Baboon ID:' + str(crop.ID))
+						#print('Baboon ID:' + str(crop.ID))
 						print('Took from bucket:' + str(BucketID))
 						print('At frame number:' + str(startframe + framenum))
 						print('At time:' + str((startframe + framenum)/25) + 's')
 						print('<----------------->')
 						print(str(crop.ID) + ' ' + str(BucketID) + ' ' + str((startframe + framenum)/25), file=out_file)
-					else:
-						print('Baboon ID:' + str(crop.ID))
-						print('<----------------->')
 	
 					if len(crop.framesforrecognition) == args.delta*6:
 						crop.framesforrecognition = []
