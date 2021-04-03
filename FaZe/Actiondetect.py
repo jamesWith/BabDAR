@@ -267,7 +267,6 @@ def Create_action_tubes(crop, crops, detections, bucketlist, framenum, currentfr
 
 def Run_detection(frames, action_label):
 	detected_action = ''
-	scores_indcies = [1]
 	if len(frames) == args.delta*6:
 		frames = transform(frames).cuda()
 		scores_RGB = eval_video(frames[0:len(frames):6], 'RGB')[0,] 
@@ -291,7 +290,8 @@ def Run_detection(frames, action_label):
 			#print('%-22s %0.2f'% (action_label[str(int(i))], final_scores[int(i)]))
 		#print('<----------------->')
 		frames = []
-	return scores_indcies, final_scores, detected_action
+		return scores_indcies, final_scores, detected_action
+	return 1,1,''
 
 
 def Detect(filename):
