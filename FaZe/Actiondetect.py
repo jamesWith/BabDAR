@@ -291,7 +291,7 @@ def Run_detection(frames, action_label):
 			#print('%-22s %0.2f'% (action_label[str(int(i))], final_scores[int(i)]))
 		#print('<----------------->')
 		frames = []
-	return scores_indcies, detected_action
+	return scores_indcies[0], detected_action
 
 
 def Detect(filename):
