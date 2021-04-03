@@ -339,9 +339,10 @@ def Detect(filename):
 						bucketdict = {}
 						#for i in scores_indcies[:2]:
 						#	print('%-22s %0.2f'% (action_label[str(int(i))], final_scores[int(i)]))
-						if startframe + framenum > 1887:
-							image = np.array(crop.framesforrecognition[0])
-							cv2.imwrite(str(startframe + framenum) + '.jpg', image)
+						if startframe + framenum == 188:
+							for count, item in enumerate(crop.framesforrecognition):
+								image = np.array(item)
+								cv2.imwrite(str(startframe + framenum + count) + '.jpg', image)
 						
 	
 						for frameinsegment, bucketdetails in enumerate(crop.intersectingdetails[:-1]): # for each frame in the 6 frame segment except last frame
