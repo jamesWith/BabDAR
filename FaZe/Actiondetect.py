@@ -340,7 +340,8 @@ def Detect(filename):
 						#for i in scores_indcies[:2]:
 						#	print('%-22s %0.2f'% (action_label[str(int(i))], final_scores[int(i)]))
 						if startframe + framenum > 1887:
-							cv2.imwrite(str(startframe + framenum) + '.jpg', crop.framesforrecognition[0])
+							image = np.array(crop.framesforrecognition[0])
+							cv2.imwrite(str(startframe + framenum) + '.jpg', image)
 						
 	
 						for frameinsegment, bucketdetails in enumerate(crop.intersectingdetails[:-1]): # for each frame in the 6 frame segment except last frame
