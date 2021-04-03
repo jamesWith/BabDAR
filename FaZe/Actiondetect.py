@@ -286,8 +286,8 @@ def Run_detection(frames, action_label):
 			print('No Assigned Action')
 		else:
 			detected_action = action_label[str(int(scores_indcies[0]))]
-		#for i in scores_indcies[:2]:
-			#print('%-22s %0.2f'% (action_label[str(int(i))], final_scores[int(i)]))
+		for i in scores_indcies[:2]:
+			print('%-22s %0.2f'% (action_label[str(int(i))], final_scores[int(i)]))
 		#print('<----------------->')
 		frames = []
 		return scores_indcies, final_scores, detected_action
@@ -336,9 +336,9 @@ def Detect(filename):
 					
 					if action == 'Taking_from_bucket':									
 						bucketdict = {}
-						for i in scores_indcies[:2]:
-							print('%-22s %0.2f'% (action_label[str(int(i))], final_scores[int(i)]))
-						print('<----------------->')
+						#for i in scores_indcies[:2]:
+						#	print('%-22s %0.2f'% (action_label[str(int(i))], final_scores[int(i)]))
+						
 	
 						for frameinsegment, bucketdetails in enumerate(crop.intersectingdetails[:-1]): # for each frame in the 6 frame segment except last frame
 							for bucket in bucketdetails: # for each bucket in each frame
@@ -364,7 +364,11 @@ def Detect(filename):
 						print('Took from bucket:' + str(BucketID))
 						print('At frame number:' + str(startframe + framenum))
 						print('At time:' + str((startframe + framenum)/25) + 's')
+						print('<----------------->')
 						print(str(crop.ID) + ' ' + str(BucketID) + ' ' + str((startframe + framenum)/25), file=out_file)
+					else:
+						print('Baboon ID:' + str(crop.ID))
+						print('<----------------->')
 	
 					if len(crop.framesforrecognition) == args.delta*6:
 						crop.framesforrecognition = []
