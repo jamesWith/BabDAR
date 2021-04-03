@@ -291,7 +291,7 @@ def Run_detection(frames, action_label):
 			#print('%-22s %0.2f'% (action_label[str(int(i))], final_scores[int(i)]))
 		#print('<----------------->')
 		frames = []
-	return scores_indcies, detected_action
+	return scores_indcies, final_scores, detected_action
 
 
 def Detect(filename):
@@ -332,7 +332,7 @@ def Detect(filename):
 				for crop in crops:
 					
 					Create_action_tubes(crop, crops, detections, bucketlist, framenum, currentframe, maxmissedframes, maxnotintersecting)
-					scores_indcies, action = Run_detection(crop.framesforrecognition, action_label)
+					scores_indcies, final_scores, action = Run_detection(crop.framesforrecognition, action_label)
 					
 					if action == 'Taking_from_bucket':									
 						bucketdict = {}
