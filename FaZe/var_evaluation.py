@@ -10,9 +10,11 @@ def Evaluation(score_list,psi=8.5):
   A = Avg(score_list)
   B = VAR(score_list)
   
+
   if B > A*psi:  #psi = 8.5 ---> 9
     return True
   else:
+    print(A, B, psi)
     return False
   
 
