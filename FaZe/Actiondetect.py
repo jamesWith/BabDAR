@@ -95,33 +95,30 @@ def add_box(frame,text,origin,font,color,fontScale=1,thickness=1,alpha=0.4,enabl
     return pt2[1]-pt1[1]+1
   
 #intialize tensors to save some of the scores for the next iteration
-pre_scoresRGB  = torch.zeros((args.num_segments - args.delta ,2)).cuda()
-pre_scoresRGBDiff =  torch.zeros((args.num_segments - args.delta ,2)).cuda()
+#now part of cropobj object
+#pre_scoresRGB  = torch.zeros((args.num_segments - args.delta ,2)).cuda()
+#pre_scoresRGBDiff =  torch.zeros((args.num_segments - args.delta ,2)).cuda()
 
-def eval_video(data, model):
+def eval_video(crop, data, model):
       """
       Evaluate single video
       video_data : (data in shape (1,num_segments*length,H,W))
       return     : a tensor of (2) size representing a score for certain batch of frames
       """
-      global pre_scoresRGB
-      global pre_scoresRGBDiff
-      pre_scoresRGB  = torch.zeros((args.num_segments - args.delta ,2)).cuda()
-      pre_scoresRGBDiff =  torch.zeros((args.num_segments - args.delta ,2)).cuda()
       with torch.no_grad():
           #reshape data to be in shape of (num_segments,length,H,W)
           #Forword Propagation
           if model == 'RGB':
               input = data.view(-1, 3, data.size(1), data.size(2))
               #concatenate the new scores with previous ones (Sliding window)
-              output = torch.cat((pre_scoresRGB,model_RGB(input)),0)
+              output = torch.cat((crop.pre_scoresRGB,model_RGB(input)),0)
               #Save Current scores as previous ones for the next iteration
-              pre_scoresRGB = output.data[-(args.num_segments - args.delta):,]
+              crop.pre_scoresRGB = output.data[-(args.num_segments - args.delta):,]
               
           elif model == 'RGBDiff':
               input = data.view(-1, 18, data.size(1), data.size(2))
-              output =torch.cat((pre_scoresRGBDiff,model_RGBDiff(input)),0)
-              pre_scoresRGBDiff = output.data[-(args.num_segments - args.delta):,]
+              output =torch.cat((crop.pre_scoresRGBDiff,model_RGBDiff(input)),0)
+              crop.pre_scoresRGBDiff = output.data[-(args.num_segments - args.delta):,]
               
           output_tensor = output.data.mean(dim = 0,keepdim=True)
           
@@ -194,6 +191,8 @@ class Cropobj(object):
 		self.overlapframes = []
 		self.framesforrecognition = []
 		self.intersectingdetails = []
+		self.pre_scoresRGB  = torch.zeros((args.num_segments - args.delta ,2)).cuda()
+		self.pre_scoresRGBDiff =  torch.zeros((args.num_segments - args.delta ,2)).cuda()
 		cropcount = 0
 
 
@@ -267,12 +266,13 @@ def Create_action_tubes(crop, crops, detections, bucketlist, framenum, currentfr
 		
 	return
 
-def Run_detection(frames, action_label, ID):
+def Run_detection(crop, action_label):
 	detected_action = ''
 	if len(frames) == args.delta*6:
+		frames = crop.framesforrecognition
 		frames = transform(frames).cuda()
-		scores_RGB = eval_video(frames[0:len(frames):6], 'RGB')[0,] 
-		scores_RGBDiff = eval_video(frames[:], 'RGBDiff')[0,]           
+		scores_RGB = eval_video(crop, frames[0:len(frames):6], 'RGB')[0,] 
+		scores_RGBDiff = eval_video(crop, frames[:], 'RGBDiff')[0,]           
 		#Fusion
 		final_scores = args.score_weights[0]*scores_RGB + args.score_weights[1] * scores_RGBDiff
 		#Just like np.argsort()[::-1]
@@ -289,12 +289,10 @@ def Run_detection(frames, action_label, ID):
 		else:
 			detected_action = action_label[str(int(scores_indcies[0]))]
 		for i in scores_indcies[:2]:
-			print('%-22s  RGB:%0.2f  RGBdiff:%0.2f'% (action_label[str(int(i))], scores_RGB[int(i)], scores_RGBDiff[int(i)]))
-		print('Baboon ID:' + str(ID))
+			print('%-22s %0.2f'% (action_label[str(int(i))], final_scores[int(i)]))
 		print('<----------------->')
 		frames = []
-		return scores_indcies, final_scores, detected_action
-	return 1,1,''
+	return detected_action
 
 
 def Detect(filename):
@@ -335,17 +333,10 @@ def Detect(filename):
 				for crop in crops:
 					
 					Create_action_tubes(crop, crops, detections, bucketlist, framenum, currentframe, maxmissedframes, maxnotintersecting)
-					scores_indcies, final_scores, action = Run_detection(crop.framesforrecognition, action_label, crop.ID)
+					action = Run_detection(crop, action_label)
 					
 					if action == 'Taking_from_bucket':									
 						bucketdict = {}
-						#for i in scores_indcies[:2]:
-						#	print('%-22s %0.2f'% (action_label[str(int(i))], final_scores[int(i)]))
-						if startframe + framenum == 1889:
-							for count, item in enumerate(crop.framesforrecognition):
-								image = np.array(item)
-								cv2.imwrite(str(startframe + framenum + count) + '.jpg', image)
-						
 	
 						for frameinsegment, bucketdetails in enumerate(crop.intersectingdetails[:-1]): # for each frame in the 6 frame segment except last frame
 							for bucket in bucketdetails: # for each bucket in each frame
@@ -367,7 +358,7 @@ def Detect(filename):
 							if value > maxscore:
 								BucketID = key # Bucket with the highest total is assigned the action
 								maxscore = value
-						#print('Baboon ID:' + str(crop.ID))
+						print('Baboon ID:' + str(crop.ID))
 						print('Took from bucket:' + str(BucketID))
 						print('At frame number:' + str(startframe + framenum))
 						print('At time:' + str((startframe + framenum)/25) + 's')
@@ -377,7 +368,6 @@ def Detect(filename):
 					if len(crop.framesforrecognition) == args.delta*6:
 						crop.framesforrecognition = []
 						crop.intersectingdetails = []
-			preframe = currentframe
 
 	bucketdict = getbucketnumbers(bucketlist, cap)
 	print(bucketdict)
