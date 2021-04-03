@@ -289,7 +289,7 @@ def Run_detection(frames, action_label, ID):
 		for i in scores_indcies[:2]:
 			print('%-22s %0.2f'% (action_label[str(int(i))], final_scores[int(i)]))
 		print('Baboon ID:' + str(ID))
-		#print('<----------------->')
+		print('<----------------->')
 		frames = []
 		return scores_indcies, final_scores, detected_action
 	return 1,1,''
@@ -339,6 +339,8 @@ def Detect(filename):
 						bucketdict = {}
 						#for i in scores_indcies[:2]:
 						#	print('%-22s %0.2f'% (action_label[str(int(i))], final_scores[int(i)]))
+						if startframe + framenum > 1887:
+							cv2.imwrite(str(startframe + framenum) + '.jpg', crop.framesforrecognition[0])
 						
 	
 						for frameinsegment, bucketdetails in enumerate(crop.intersectingdetails[:-1]): # for each frame in the 6 frame segment except last frame
