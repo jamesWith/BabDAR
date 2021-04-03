@@ -31,7 +31,7 @@ parser.add_argument('--num_segments', type=int, default=8, help="Sliding Window 
 parser.add_argument('--sampling_freq', type=int, default=12, help="Take 1 image every 12 image")
 parser.add_argument('--delta', type=int, default=2, help="Sliding Window Delta")
 parser.add_argument('--psi', type=float, default=2.5)
-parser.add_argument('--input_size', type=int, default=224)
+parser.add_argument('--input_size', type=int, default=256)
 parser.add_argument('--crop_fusion_type', type=str, default='avg',
                     choices=['avg', 'max', 'topk'])
 parser.add_argument('--dropout', type=float, default=0.7)
