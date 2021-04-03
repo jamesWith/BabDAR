@@ -106,6 +106,8 @@ def eval_video(data, model):
       """
       global pre_scoresRGB
       global pre_scoresRGBDiff
+      pre_scoresRGB  = torch.zeros((args.num_segments - args.delta ,2)).cuda()
+      pre_scoresRGBDiff =  torch.zeros((args.num_segments - args.delta ,2)).cuda()
       with torch.no_grad():
           #reshape data to be in shape of (num_segments,length,H,W)
           #Forword Propagation
