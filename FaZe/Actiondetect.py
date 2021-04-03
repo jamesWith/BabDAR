@@ -267,7 +267,7 @@ def Create_action_tubes(crop, crops, detections, bucketlist, framenum, currentfr
 
 def Run_detection(frames, action_label):
 	detected_action = ''
-	scores_indcies = []
+	scores_indcies = [1]
 	if len(frames) == args.delta*6:
 		frames = transform(frames).cuda()
 		scores_RGB = eval_video(frames[0:len(frames):6], 'RGB')[0,] 
