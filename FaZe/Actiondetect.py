@@ -268,8 +268,8 @@ def Create_action_tubes(crop, crops, detections, bucketlist, framenum, currentfr
 
 def Run_detection(crop, action_label):
 	detected_action = ''
-	if len(frames) == args.delta*6:
-		frames = crop.framesforrecognition
+	frames = crop.framesforrecognition
+	if len(frames) == args.delta*6:	
 		frames = transform(frames).cuda()
 		scores_RGB = eval_video(crop, frames[0:len(frames):6], 'RGB')[0,] 
 		scores_RGBDiff = eval_video(crop, frames[:], 'RGBDiff')[0,]           
