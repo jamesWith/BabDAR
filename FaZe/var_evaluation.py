@@ -12,10 +12,8 @@ def Evaluation(score_list,psi=8.5):
   
 
   if B > A*psi:  #psi = 8.5 ---> 9
-    print(A, B, psi, 'True')
     return True
   else:
-    print(A, B, psi, 'False')
     return False
   
 
