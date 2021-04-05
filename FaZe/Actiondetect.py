@@ -341,8 +341,8 @@ def Detect(filename):
 						bucketdict = {}
 						x = x + 1
 						if x==1:
-							crop1 = np.asarray(Createcropstabilised(crop.framesforrecognition[5], crop.lastpos, bucketlist[framenum], [crop.centreleft,crop.centretop] , crop.size))
-							crop2 = np.asarray(Createcropstabilised(crop.framesforrecognition[6], crop.lastpos, bucketlist[framenum], [crop.centreleft,crop.centretop] , crop.size))
+							crop1 = Createcropstabilised(np.asarray(crop.framesforrecognition[5]), crop.lastpos, bucketlist[framenum], [crop.centreleft,crop.centretop] , crop.size)
+							crop2 = Createcropstabilised(np.asarray(crop.framesforrecognition[6]), crop.lastpos, bucketlist[framenum], [crop.centreleft,crop.centretop] , crop.size)
 							rgbdiffimg = np.abs(np.subtract(crop1.astype(np.int16), crop2.astype(np.int16)))
 							cv2.imwrite('rgbimg.jpg', cv2.cvtColor(crop1, cv2.COLOR_BGR2RGB))
 							cv2.imwrite('rgbdiffimg.jpg', rgbdiffimg)
