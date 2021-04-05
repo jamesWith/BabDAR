@@ -347,14 +347,14 @@ def Detect(filename):
 							cv2.imwrite('rgbimg.jpg', cv2.cvtColor(crop1, cv2.COLOR_BGR2RGB))
 							cv2.imwrite('rgbdiffimg.jpg', rgbdiffimg)
 
-						for frameinsegment, bucketdetails in enumerate(crop.intersectingdetails[:-2]): # for each frame in the 6 frame segment except last frame
+						for frameinsegment, bucketdetails in enumerate(crop.intersectingdetails[:-5]): # for each frame in the 6 frame segment except last frame
 							for bucket in bucketdetails: # for each bucket in each frame
 								buc1 = getbucketcrop(bucket[0], preframes[frameinsegment])
-								buc2 = getbucketcrop(bucket[0], preframes[frameinsegment + 2])
+								buc2 = getbucketcrop(bucket[0], preframes[frameinsegment + 5])
 								rgbdiffbucket = np.abs(np.subtract(buc1.astype(np.int16), buc2.astype(np.int16)))
 								movevalue = np.mean(rgbdiffbucket)
 
-								if frameinsegment == 4 and x==1:
+								if frameinsegment == 1 and x==1:
 									cv2.imwrite('rgbdiffbucket.jpg', rgbdiffbucket)
 
 								distvalue = bucket[1]
