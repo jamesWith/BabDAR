@@ -338,11 +338,11 @@ def Detect(filename):
 					if action == 'Taking_from_bucket':									
 						bucketdict = {}
 						
-						crop1 = crop.framesforrecognition[3]
-						crop2 = crop.framesforrecognition[4]
+						crop1 = np.asarray(crop.framesforrecognition[3])
+						crop2 = np.asarray(crop.framesforrecognition[4])
 						rgbdiffimg = np.abs(np.subtract(crop1.astype(np.int16), crop2.astype(np.int16)))
-						cv2.imwrite('rgbimg.jpg', np.asarray(crop1))
-						cv2.imwrite('rgbdiffimg.jpg', np.asarray(rgbdiffimg))
+						cv2.imwrite('rgbimg.jpg', crop1)
+						cv2.imwrite('rgbdiffimg.jpg', rgbdiffimg)
 
 						for frameinsegment, bucketdetails in enumerate(crop.intersectingdetails[:-1]): # for each frame in the 6 frame segment except last frame
 							for bucket in bucketdetails: # for each bucket in each frame
@@ -351,7 +351,7 @@ def Detect(filename):
 								rgbdiffbucket = np.abs(np.subtract(buc1.astype(np.int16), buc2.astype(np.int16)))
 								movevalue = np.mean(rgbdiffbucket)
 
-								cv2.imwrite('rgbdiffbucket.jpg', np.asarray(rgbdiffbucket))
+								cv2.imwrite('rgbdiffbucket.jpg', rgbdiffbucket)
 
 								distvalue = bucket[1]
 								if distvalue==0:
