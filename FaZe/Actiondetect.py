@@ -340,7 +340,7 @@ def Detect(filename):
 					if action == 'Taking_from_bucket':									
 						bucketdict = {}
 						x = x + 1
-						if x==1:
+						if x==2:
 							crop1, a, b, c = Createcropstabilised(np.asarray(preframes[0]), crop.lastpos, bucketlist[framenum], [crop.centreleft,crop.centretop] , crop.size)
 							crop2, a, b, c = Createcropstabilised(np.asarray(preframes[1]), crop.lastpos, bucketlist[framenum], [crop.centreleft,crop.centretop] , crop.size)
 							rgbdiffimg = np.abs(np.subtract(crop1.astype(np.int16), crop2.astype(np.int16)))
@@ -354,7 +354,7 @@ def Detect(filename):
 								rgbdiffbucket = np.abs(np.subtract(buc1.astype(np.int16), buc2.astype(np.int16)))
 								movevalue = np.mean(rgbdiffbucket)
 
-								if frameinsegment == 0 and x==1:
+								if frameinsegment == 0 and x==2:
 									cv2.imwrite('rgbdiffbucket.jpg', rgbdiffbucket)
 
 								distvalue = bucket[1]
