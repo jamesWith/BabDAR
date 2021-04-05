@@ -235,7 +235,7 @@ def Create_action_tubes(crop, crops, detections, bucketlist, framenum, currentfr
 		for bucket in bucketlist[framenum]:
 			if Intersecting(detection, bucket): # Find if the baboon is intesecting any buckets
 				intersectinglist.append(bucket)
-				bucketdetails.append([bucket, intersecting_area(detection, bucket)])
+				bucketdetails.append([bucket, distance_score(detection, bucket)])
 
 		crop.centreleft += (centre(detection)[0] - crop.centreleft)*0.1
 		crop.centretop += (centre(detection)[1] - crop.centretop)*0.1
@@ -347,7 +347,7 @@ def Detect(filename):
 								distvalue = bucket[1]
 								if distvalue==0:
 									distvalue = 1
-								score = 1/distvalue
+								score = movevalue/distvalue
 								if bucket[0][4] not in bucketdict:
 									bucketdict[bucket[0][4]] = score
 								else:
@@ -374,6 +374,7 @@ def Detect(filename):
 	action_dets = np.loadtxt(detfile[:-9] + "action.txt" , delimiter=' ', dtype=str)
 	bucketcolourdict = {}
 	baboonvisitnumber = {}
+	baboonprevbucket = {}
 	with open(detfile[:-9] + "action.txt", 'w') as out_file:
 		print('PAIR, INDIV, PREF, TIME, VISIT N', file=out_file)
 		for action in action_dets:
@@ -383,8 +384,10 @@ def Detect(filename):
 				baboonvisitnumber[action[0]] = 1
 			else:
 				baboonvisitnumber[action[0]] = baboonvisitnumber[action[0]] + 1
-			if action[1] != '-1':
+
+			if (action[1] != '-1') and ((action[0] not in baboonprevbucket) or (baboonprevbucket[action[0]]!=bucketdict[int(action[1])])):
 				print(bucketdict[int(action[1])].split()[0] + ',' + action[0]+ ','+ bucketcolourdict[bucketdict[int(action[1])].split()[1]] + ',' + action[2] + ',' + str(baboonvisitnumber[action[0]]), file=out_file)
+			baboonprevbucket[action[0]] = bucketdict[int(action[1])]
 
 	cap.release()
 	return

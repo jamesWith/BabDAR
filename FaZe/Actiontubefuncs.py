@@ -91,8 +91,7 @@ def Intersecting(bbox1, bbox2): #bbox must be array in form [topleft distance fr
 		return True
 	else:
 		return False
-
-def intersecting_area(detection, box):
+def distance_score(detection, box):
 	detbottom = detection[1] + detection[3]
 	detleft = detection[0]
 	detright = detection[0] + detection[2]
