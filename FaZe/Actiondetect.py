@@ -338,9 +338,9 @@ def Detect(filename):
 					if action == 'Taking_from_bucket':									
 						bucketdict = {}
 						
-						crop1 = crop.framesforrecognition[frameinsegment]
+						crop1 = crop.framesforrecognition[3]
 						cv2.imwrite(rgbimg.jpg, crop1)
-						crop2 = crop.framesforrecognition[frameinsegment]
+						crop2 = crop.framesforrecognition[4]
 						rgbdiffimg = np.abs(np.subtract(crop1.astype(np.int16), crop2.astype(np.int16)))
 						cv2.imwrite(rgbdiffimg.jpg, rgbdiffimg)
 
