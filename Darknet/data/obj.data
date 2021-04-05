@@ -2,4 +2,4 @@ classes = 2
 train = Darknet/data/train.txt
 valid = Darknet/data/test.txt
 names = Darknet/data/obj.names
-backup = /mydrive/yolov4/backup
+backup = ../gdrive/MyDrive/FYP/Trained-models/Backup
