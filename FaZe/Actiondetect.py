@@ -297,7 +297,6 @@ def Run_detection(crop, action_label):
 
 def Detect(filename):
 
-	x = 0 
 	detfile = args.det_file_name
 	
 	# Video to generate crops
@@ -339,13 +338,6 @@ def Detect(filename):
 					
 					if action == 'Taking_from_bucket':									
 						bucketdict = {}
-						x = x + 1
-						if x==1:
-							crop1, a, b, c = Createcropstabilised(np.asarray(preframes[3]), crop.lastpos, bucketlist[framenum], [crop.centreleft,crop.centretop] , crop.size)
-							crop2, a, b, c = Createcropstabilised(np.asarray(preframes[5]), crop.lastpos, bucketlist[framenum], [crop.centreleft,crop.centretop] , crop.size)
-							rgbdiffimg = np.abs(np.subtract(crop1.astype(np.int16), crop2.astype(np.int16)))
-							cv2.imwrite('rgbimg.jpg', crop1[:, :, [2, 1, 0]])
-							cv2.imwrite('rgbdiffimg.jpg', rgbdiffimg)
 
 						for frameinsegment, bucketdetails in enumerate(crop.intersectingdetails[:-5]): # for each frame in the 6 frame segment except last frame
 							for bucket in bucketdetails: # for each bucket in each frame
@@ -353,9 +345,6 @@ def Detect(filename):
 								buc2 = getbucketcrop(bucket[0], preframes[frameinsegment + 5])
 								rgbdiffbucket = np.abs(np.subtract(buc1.astype(np.int16), buc2.astype(np.int16)))
 								movevalue = np.mean(rgbdiffbucket)
-
-								if frameinsegment == 0 and x==1:
-									cv2.imwrite('rgbdiffbucket.jpg', rgbdiffbucket)
 
 								distvalue = bucket[1]
 								if distvalue==0:

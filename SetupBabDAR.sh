@@ -1,8 +1,17 @@
 #!/bin/bash
 
 #Move into the Darknet folder to make darknet
-cd Darknet
 
+
+conda env create -f BabDAR-venv.yml
+conda init zsh
+source ~/.zshrc
+conda activate BabDARvenv
+
+echo $CONDA_PREFIX
+
+
+cd Darknet
 while true; do
     read -p "Is a GPU available on this computer?" yn
     case $yn in
@@ -16,12 +25,12 @@ while true; do
 done
 
 # make darknet
-make
+make -q
 
 cd ..
 
-pip install filterpy==1.4.5
-pip install scikit-image==0.17.2
-pip install lap==0.4.0
-pip install -q xlrd
-pip install torchcam
+#pip install filterpy==1.4.5
+#pip install scikit-image==0.17.2
+#pip install lap==0.4.0
+#pip install -q xlrd
+#pip install torchcam
