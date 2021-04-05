@@ -344,7 +344,7 @@ def Detect(filename):
 							crop1, a, b, c = Createcropstabilised(np.asarray(preframes[3]), crop.lastpos, bucketlist[framenum], [crop.centreleft,crop.centretop] , crop.size)
 							crop2, a, b, c = Createcropstabilised(np.asarray(preframes[5]), crop.lastpos, bucketlist[framenum], [crop.centreleft,crop.centretop] , crop.size)
 							rgbdiffimg = np.abs(np.subtract(crop1.astype(np.int16), crop2.astype(np.int16)))
-							cv2.imwrite('rgbimg.jpg', cv2.cvtColor(crop1, cv2.COLOR_RGB2BGR))
+							cv2.imwrite('rgbimg.jpg', crop1[:, :, [2, 1, 0]])
 							cv2.imwrite('rgbdiffimg.jpg', rgbdiffimg)
 
 						for frameinsegment, bucketdetails in enumerate(crop.intersectingdetails[:-5]): # for each frame in the 6 frame segment except last frame
