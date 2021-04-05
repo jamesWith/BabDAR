@@ -341,8 +341,8 @@ def Detect(filename):
 						bucketdict = {}
 						x = x + 1
 						if x==1:
-							crop1, a, b, c = Createcropstabilised(np.asarray(preframes[4]), crop.lastpos, bucketlist[framenum], [crop.centreleft,crop.centretop] , crop.size)
-							crop2, a, b, c = Createcropstabilised(np.asarray(preframes[5]), crop.lastpos, bucketlist[framenum], [crop.centreleft,crop.centretop] , crop.size)
+							crop1, a, b, c = Createcropstabilised(np.asarray(preframes[0]), crop.lastpos, bucketlist[framenum], [crop.centreleft,crop.centretop] , crop.size)
+							crop2, a, b, c = Createcropstabilised(np.asarray(preframes[1]), crop.lastpos, bucketlist[framenum], [crop.centreleft,crop.centretop] , crop.size)
 							rgbdiffimg = np.abs(np.subtract(crop1.astype(np.int16), crop2.astype(np.int16)))
 							cv2.imwrite('rgbimg.jpg', cv2.cvtColor(crop1, cv2.COLOR_BGR2RGB))
 							cv2.imwrite('rgbdiffimg.jpg', rgbdiffimg)
@@ -354,7 +354,7 @@ def Detect(filename):
 								rgbdiffbucket = np.abs(np.subtract(buc1.astype(np.int16), buc2.astype(np.int16)))
 								movevalue = np.mean(rgbdiffbucket)
 
-								if frameinsegment == 5 and x==1:
+								if frameinsegment == 0 and x==1:
 									cv2.imwrite('rgbdiffbucket.jpg', rgbdiffbucket)
 
 								distvalue = bucket[1]
