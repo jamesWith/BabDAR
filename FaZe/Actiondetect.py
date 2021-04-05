@@ -296,6 +296,8 @@ def Run_detection(crop, action_label):
 
 
 def Detect(filename):
+
+	x = 0 
 	detfile = args.det_file_name
 	
 	# Video to generate crops
@@ -337,12 +339,13 @@ def Detect(filename):
 					
 					if action == 'Taking_from_bucket':									
 						bucketdict = {}
-						
-						crop1 = np.asarray(crop.framesforrecognition[3])
-						crop2 = np.asarray(crop.framesforrecognition[4])
-						rgbdiffimg = np.abs(np.subtract(crop1.astype(np.int16), crop2.astype(np.int16)))
-						cv2.imwrite('rgbimg.jpg', crop1)
-						cv2.imwrite('rgbdiffimg.jpg', rgbdiffimg)
+						x = x + 1
+						if x==2:
+							crop1 = np.asarray(crop.framesforrecognition[3])
+							crop2 = np.asarray(crop.framesforrecognition[4])
+							rgbdiffimg = np.abs(np.subtract(crop1.astype(np.int16), crop2.astype(np.int16)))
+							cv2.imwrite('rgbimg.jpg', cv2.cvtColor(crop1, cv2.COLOR_BGR2RGB))
+							cv2.imwrite('rgbdiffimg.jpg', rgbdiffimg)
 
 						for frameinsegment, bucketdetails in enumerate(crop.intersectingdetails[:-1]): # for each frame in the 6 frame segment except last frame
 							for bucket in bucketdetails: # for each bucket in each frame
@@ -351,7 +354,8 @@ def Detect(filename):
 								rgbdiffbucket = np.abs(np.subtract(buc1.astype(np.int16), buc2.astype(np.int16)))
 								movevalue = np.mean(rgbdiffbucket)
 
-								cv2.imwrite('rgbdiffbucket.jpg', rgbdiffbucket)
+								if frameinsegment == 3 and x==2
+									cv2.imwrite('rgbdiffbucket.jpg', rgbdiffbucket)
 
 								distvalue = bucket[1]
 								if distvalue==0:
@@ -387,14 +391,15 @@ def Detect(filename):
 	with open(detfile[:-9] + "action.txt", 'w') as out_file:
 		print('PAIR, INDIV, PREF, TIME, VISIT N', file=out_file)
 		for action in action_dets:
-			if bucketdict[int(action[1])].split()[1] not in bucketcolourdict:
-				bucketcolourdict[bucketdict[int(action[1])].split()[1]] = input('What is the contents of ' + bucketdict[int(action[1])].split()[1] + ' buckets?')
-			
 			if (action[1] != '-1') and ((action[0] not in baboonprevbucket) or (baboonprevbucket[action[0]]!=bucketdict[int(action[1])])):
 				if action[0] not in baboonvisitnumber:
 					baboonvisitnumber[action[0]] = 1
 				else:
 					baboonvisitnumber[action[0]] = baboonvisitnumber[action[0]] + 1
+
+				if bucketdict[int(action[1])].split()[1] not in bucketcolourdict:
+				bucketcolourdict[bucketdict[int(action[1])].split()[1]] = input('What is the contents of ' + bucketdict[int(action[1])].split()[1] + ' buckets?')
+
 				print(bucketdict[int(action[1])].split()[0] + ',' + action[0]+ ','+ bucketcolourdict[bucketdict[int(action[1])].split()[1]] + ',' + action[2] + ',' + str(baboonvisitnumber[action[0]]), file=out_file)
 			baboonprevbucket[action[0]] = bucketdict[int(action[1])]
 
