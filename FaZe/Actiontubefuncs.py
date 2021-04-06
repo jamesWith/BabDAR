@@ -1,7 +1,5 @@
 import numpy as np
 import cv2
-if args.colab:
-	from IPython.display import Image
 import matplotlib.pyplot as plt
 import time
 
@@ -123,6 +121,8 @@ def getbucketcrop(bucket, frame):
 def getbucketnumbers(bucketlist, cap):
 	#bucketdict = {-1: "-1"}
 	#bucketwait = {}
+	#if args.colab:
+	#	from IPython.display import Image
 	#for framenum, bucketperframe in enumerate(bucketlist):
 	#	for bucket in bucketperframe:
 	#		if bucket[4] not in bucketdict:
