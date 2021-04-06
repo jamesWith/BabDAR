@@ -151,7 +151,7 @@ def getbucketnumbers(bucketlist, cap):
 						plt.close()
 				else:
 					bucketwait[bucket[4]]=bucketwait[bucket[4]]-1
-	bucketdict  = {-1: '-1 n', 19: '7 g', 18: '3 b', 17: '7 b', 16: '8 b', 15: '4 b', 14: '3 g', 13: '5 g', 12: '6 g', 11: '10 b', 10: '5 b', 9: '2 b', 8: '2 g', 7: '1 b', 6: '8 g', 5: '1 g', 4: '10 g', 3: '6 b', 2: '4 g', 1: '9 b', 27: '9 g', 38: '7 b'}
+	#bucketdict  = {-1: '-1 n', 19: '7 g', 18: '3 b', 17: '7 b', 16: '8 b', 15: '4 b', 14: '3 g', 13: '5 g', 12: '6 g', 11: '10 b', 10: '5 b', 9: '2 b', 8: '2 g', 7: '1 b', 6: '8 g', 5: '1 g', 4: '10 g', 3: '6 b', 2: '4 g', 1: '9 b', 27: '9 g', 38: '7 b'}
 	return bucketdict
 
 
