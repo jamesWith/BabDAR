@@ -3,29 +3,6 @@ import cv2
 import matplotlib.pyplot as plt
 import time
 
-#def getlabelbboxlists(path, filename):
-#	bucketlist = []
-#	baboonlist = []
-#	
-#	with open(path+ filename + '.txt', 'r') as label:
-#			labelstr = label.readlines()
-#			for line  in labelstr:
-#				line = line.split(' ')
-#				if line[0] == '1':
-#					line.remove('1')
-#					bucketlist.append(line)
-#				else
-#					line.remove('0')
-#					baboonlist.append(line)
-#	return(baboonlist, bucketlist)
-
-def imShow(image):
-	get_ipython().run_line_magic('matplotlib', 'inline')
-	plt.axis("off")
-	plt.imshow(cv2.cvtColor(image, cv2.COLOR_BGR2RGB))
-	plt.show()
-
-
 
 def getdetectionbboxlists(path):
 	bucketlist = []
@@ -121,7 +98,6 @@ def getbucketcrop(bucket, frame):
 def getbucketnumbers(bucketlist, cap, colab):
 	bucketdict = {-1: "-1"}
 	bucketwait = {}
-	print('hellooo')
 	if colab:
 		from IPython.display import Image
 	for framenum, bucketperframe in enumerate(bucketlist):
@@ -130,8 +106,6 @@ def getbucketnumbers(bucketlist, cap, colab):
 				if (bucket[4] not in bucketwait) or (bucketwait[bucket[4]]==0):
 					cap.set(cv2.CAP_PROP_POS_FRAMES, framenum)
 					ret, currentframe = cap.read()
-					#imShow(getbucketcrop(bucket, currentframe))
-					print('this working')
 					if colab:
 						get_ipython().run_line_magic('matplotlib', 'inline')
 					plt.axis("off")
@@ -155,45 +129,6 @@ def getbucketnumbers(bucketlist, cap, colab):
 	return bucketdict
 
 
-
-
-def Createcrop(frame, baboon, intersectinglist): #bbox as [left, top, width, height, baboon ID] in pixels
-	# crop frame to around baboon
-	# create black canvas
-	# create mask to only show good bits
-	framelist =[]
-	#frame = cv2.line(frame, bucketcentre, babooncentre, (255,255,255), 3)
-	cropsize = 64*4
-	#for baboon in baboonbox:
-	endframe = np.full((1080, 1920, 3), 128 ,dtype=np.uint8)
-	mask = np.zeros([1080, 1920, 3],dtype=np.uint8)
-	left = baboon[0]
-	right = baboon[0] + baboon[2]
-	top = baboon[1]
-	bottom = baboon[1] + baboon[3]
-
-
-	imgsize = max((bottom - top), (right - left)) * 1.2
-	bottom = min(int(top + imgsize),1080)
-	centre = ((right+left)/2)
-	left = max(int(centre-(imgsize/2)), 0) - (max(int(centre+(imgsize/2)), 1920) - 1920)
-	right = min(int(centre+(imgsize/2)), 1920) - min(int(centre-(imgsize/2)), 0)
-	scale = imgsize/cropsize
-
-	mask = cv2.rectangle(mask, (int(baboon[0]-0.2*imgsize),baboon[1]), (int(baboon[0] + baboon[2]+0.2*imgsize),baboon[1] + baboon[3]), (255,255,255), -1)
-
-
-	for bucket in intersectinglist:
-		mask = cv2.rectangle(mask, (bucket[0],bucket[1]), (bucket[0] + bucket[2],bucket[1] + bucket[3]), (255,255,255), -1)
-
-	mask = mask == 255
-	endframe[mask] = frame[mask]
-	crop_frame = endframe[top:bottom, left:right]
-	crop_frame = cv2.resize(crop_frame, (cropsize, cropsize))
-	#cv2.imshow('image',crop_frame)
-	#cv2.waitKey(0)
-	#cv2.destroyAllWindows()
-	return crop_frame
 
 def Createcropstabilised(frame, baboon, intersectinglist, centre, imgsize): #bbox as [left, top, width, height, baboon ID] in pixels
 	# crop frame to around baboon

@@ -268,8 +268,6 @@ def Create_action_tubes(crop, crops, detections, bucketlist, framenum, currentfr
 		frame = Image.fromarray(cv2.cvtColor(frame, cv2.COLOR_BGR2RGB))
 		crop.framesforrecognition.append(frame)
 		crop.intersectingdetails.append(bucketdetails)
-		#print('Picked frame, ', framenum)
-		#crop.vidout.write(Createcrop(currentframe, crop.lastpos, bucketlist[framenum]))
 		
 	return
 
