@@ -121,6 +121,7 @@ def getbucketcrop(bucket, frame):
 def getbucketnumbers(bucketlist, cap):
 	bucketdict = {-1: "-1"}
 	bucketwait = {}
+	print('hello')
 	if args.colab:
 		from IPython.display import Image
 	for framenum, bucketperframe in enumerate(bucketlist):
