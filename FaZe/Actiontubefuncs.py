@@ -130,6 +130,7 @@ def getbucketnumbers(bucketlist, cap):
 					cap.set(cv2.CAP_PROP_POS_FRAMES, framenum)
 					ret, currentframe = cap.read()
 					#imShow(getbucketcrop(bucket, currentframe))
+					print('this working')
 					if args.colab:
 						get_ipython().run_line_magic('matplotlib', 'inline')
 					plt.axis("off")
