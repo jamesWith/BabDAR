@@ -373,7 +373,7 @@ def Detect(filename):
 						print('At frame number:' + str(startframe + framenum))
 						print('At time:' + str((startframe + framenum)/25) + 's')
 						print('<----------------->')
-						print(str(crop.ID) + ' ' + str(BucketID) + ' ' + str((startframe + framenum)/25), file=out_file)
+						print(str(crop.ID) + ' ' + str(BucketID) + ' ' + str((startframe + framenum)/25) + str(startframe + framenum), file=out_file)
 	
 					if len(crop.framesforrecognition) == args.delta*6:
 						crop.framesforrecognition = []
@@ -381,6 +381,7 @@ def Detect(filename):
 	bucketdict = getbucketnumbers(bucketlist, cap, args.colab)
 	#print(bucketdict)
 	action_dets = np.loadtxt(detfile[:-9] + "action.txt" , delimiter=' ', dtype=str)
+	action_dets = selectbucket(action_dets, args.sampling_freq)
 	bucketcolourdict = {}
 	baboonvisitnumber = {}
 	baboonprevbucket = {}

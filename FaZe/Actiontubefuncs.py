@@ -94,6 +94,36 @@ def getbucketcrop(bucket, frame):
 	bucketcrop = np.asanyarray(frame)[buctop:bucbot, bucleft:bucright]
 	return bucketcrop
 
+def selectbucket(action_dets, sampling_freq):
+	actionlist = []
+	for actionline, action in enumerate(action_dets): #go through each action in the video
+		found = False
+		for currentaction in reversed(actionlist):
+			if (currentaction[0] == action[0]) and (int(action[3]) - currentaction[2] < 25): # check if that baboon has done an action recently
+				if action[1] in currentaction[1]: # if this actions bucket is already in dict of buckets from recent actions
+					currentaction[1][action[1]] = currentaction[1][action[1]] + 1 # then add 1
+				else:
+					currentaction[1][action[1]] = 1 # or just set to 1 if it wasnt there before
+				currentaction[2] = int(action[3]) # set frame of last action to current frame
+				found = True
+				break
+		if not found: # if this is a new action
+			actionlist.append([action[0], {action[1]:1}, int(action[3]), int(action[3])]) # add action to list storing Baboon ID, Dict for possible buckets, and frame number of action
+	output_actions = []
+	for line in actionlist:
+		output_actions.append([])
+		output_actions[-1].append(line[0])
+		BucketID = '-1'
+		maxhits = 0
+		for key, value in line[1].items():
+			if value > maxhits:
+				BucketID = key # Bucket with the highest total is assigned the action
+				maxhits = value
+		output_actions[-1].append(BucketID)
+		output_actions[-1].append(str(line[3]/25))
+
+
+
 
 def getbucketnumbers(bucketlist, cap, colab):
 	bucketdict = {-1: "-1"}
