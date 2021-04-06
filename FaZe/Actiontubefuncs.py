@@ -118,12 +118,12 @@ def getbucketcrop(bucket, frame):
 	return bucketcrop
 
 
-def getbucketnumbers(bucketlist, cap):
+def getbucketnumbers(bucketlist, cap, colab):
 	bucketdict = {-1: "-1"}
 	bucketwait = {}
 	print('hellooo')
-	#if args.colab:
-		#from IPython.display import Image
+	if colab:
+		from IPython.display import Image
 	for framenum, bucketperframe in enumerate(bucketlist):
 		for bucket in bucketperframe:
 			if bucket[4] not in bucketdict:
@@ -132,11 +132,11 @@ def getbucketnumbers(bucketlist, cap):
 					ret, currentframe = cap.read()
 					#imShow(getbucketcrop(bucket, currentframe))
 					print('this working')
-					if args.colab:
+					if colab:
 						get_ipython().run_line_magic('matplotlib', 'inline')
 					plt.axis("off")
 					plt.imshow(cv2.cvtColor(getbucketcrop(bucket, currentframe), cv2.COLOR_BGR2RGB))
-					if args.colab:
+					if colab:
 						plt.show()
 					else:
 						plt.show(block=False)
@@ -147,7 +147,7 @@ def getbucketnumbers(bucketlist, cap):
 						bucketdict[bucket[4]] = bucketnumber + ' ' + bucketcolour
 					else:
 						bucketwait[bucket[4]] = 25
-					if not args.colab:
+					if not colab:
 						plt.close()
 				else:
 					bucketwait[bucket[4]]=bucketwait[bucket[4]]-1

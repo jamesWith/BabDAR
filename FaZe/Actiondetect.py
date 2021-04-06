@@ -380,9 +380,8 @@ def Detect(filename):
 					if len(crop.framesforrecognition) == args.delta*6:
 						crop.framesforrecognition = []
 						crop.intersectingdetails = []
-	print('helloo')
-	bucketdict = getbucketnumbers(bucketlist, cap)
-	print(bucketdict)
+	bucketdict = getbucketnumbers(bucketlist, cap, args.colab)
+	#print(bucketdict)
 	action_dets = np.loadtxt(detfile[:-9] + "action.txt" , delimiter=' ', dtype=str)
 	bucketcolourdict = {}
 	baboonvisitnumber = {}
