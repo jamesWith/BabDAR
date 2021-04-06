@@ -41,7 +41,7 @@ parser.add_argument('-j', '--workers', default=4, type=int, metavar='N',
 parser.add_argument('--gpus', nargs='+', type=int, default=None)
 parser.add_argument('--score_weights', nargs='+', type=float, default=[1,1.5])
 parser.add_argument('--quality',type=str,default = '480p')
-
+parser.add_argument('--colab', type=bool, default=False)
 
 
 args = parser.parse_args()
@@ -140,7 +140,10 @@ model_RGBDiff = TSN_model(num_class, 1, 'RGBDiff',
   
 for i in range(len(args.weights)):
   #load the weights of your model training
-  checkpoint = torch.load(args.weights[i])
+  if args.gpus is not None:
+  	checkpoint = torch.load(args.weights[i])
+  else:
+  	checkpoint = torch.load(args.weights[i], map_location='cpu')
   print("epoch {}, best acc1@: {}" .format(checkpoint['epoch'], checkpoint['best_acc1']))
 
   base_dict = {'.'.join(k.split('.')[1:]): v for k,v in list(checkpoint['state_dict'].items())}
@@ -161,12 +164,12 @@ transform = torchvision.transforms.Compose([
 
 if args.gpus is not None:
   devices = [args.gpus[i] for i in range(args.workers)]
+  model_RGB = torch.nn.DataParallel(model_RGB.cuda(devices[0]), device_ids=devices)
+  model_RGBDiff = torch.nn.DataParallel(model_RGBDiff.cuda(devices[0]), device_ids=devices)
 else:
   devices = list(range(args.workers))
 
-model_RGB = torch.nn.DataParallel(model_RGB.cuda(devices[0]), device_ids=devices)
-model_RGBDiff = torch.nn.DataParallel(model_RGBDiff.cuda(devices[0]), device_ids=devices)
- 
+
 model_RGB.eval()
 model_RGBDiff.eval()    
 
@@ -191,8 +194,12 @@ class Cropobj(object):
 		self.overlapframes = []
 		self.framesforrecognition = []
 		self.intersectingdetails = []
-		self.pre_scoresRGB  = torch.zeros((args.num_segments - args.delta ,2)).cuda()
-		self.pre_scoresRGBDiff =  torch.zeros((args.num_segments - args.delta ,2)).cuda()
+		if args.gpus is None:
+			self.pre_scoresRGB  = torch.zeros((args.num_segments - args.delta ,2))
+			self.pre_scoresRGBDiff =  torch.zeros((args.num_segments - args.delta ,2))
+		else:
+			self.pre_scoresRGB  = torch.zeros((args.num_segments - args.delta ,2)).cuda()
+			self.pre_scoresRGBDiff =  torch.zeros((args.num_segments - args.delta ,2)).cuda()
 		cropcount = 0
 
 
@@ -270,7 +277,10 @@ def Run_detection(crop, action_label):
 	detected_action = ''
 	frames = crop.framesforrecognition
 	if len(frames) == args.delta*6:	
-		frames = transform(frames).cuda()
+		if args.gpus is None:
+			frames = transform(frames)
+		else:
+			frames = transform(frames).cuda()
 		scores_RGB = eval_video(crop, frames[0:len(frames):6], 'RGB')[0,] 
 		scores_RGBDiff = eval_video(crop, frames[:], 'RGBDiff')[0,]           
 		#Fusion
