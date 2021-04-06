@@ -119,32 +119,32 @@ def getbucketcrop(bucket, frame):
 
 
 def getbucketnumbers(bucketlist, cap):
-	#bucketdict = {-1: "-1"}
-	#bucketwait = {}
-	#if args.colab:
-	#	from IPython.display import Image
-	#for framenum, bucketperframe in enumerate(bucketlist):
-	#	for bucket in bucketperframe:
-	#		if bucket[4] not in bucketdict:
-	#			if (bucket[4] not in bucketwait) or (bucketwait[bucket[4]]==0):
-	#				cap.set(cv2.CAP_PROP_POS_FRAMES, framenum)
-	#				ret, currentframe = cap.read()
-	#				#imShow(getbucketcrop(bucket, currentframe))
-	#				if args.colab:
-	#					get_ipython().run_line_magic('matplotlib', 'inline')
-	#				plt.axis("off")
-	#				plt.imshow(cv2.cvtColor(getbucketcrop(bucket, currentframe), cv2.COLOR_BGR2RGB))
-	#				plt.show(block=False)
-	#				time.sleep(1)
-	#				bucketnumber = input('Enter bucket number (if obscured press enter to move on): ')
-	#				if bucketnumber != '':
-	#					bucketcolour = input('Enter bucket colour: ')
-	#					bucketdict[bucket[4]] = bucketnumber + ' ' + bucketcolour
-	#				else:
-	#					bucketwait[bucket[4]] = 25
-	#				plt.close
-	#			else:
-	#				bucketwait[bucket[4]]=bucketwait[bucket[4]]-1
+	bucketdict = {-1: "-1"}
+	bucketwait = {}
+	if args.colab:
+		from IPython.display import Image
+	for framenum, bucketperframe in enumerate(bucketlist):
+		for bucket in bucketperframe:
+			if bucket[4] not in bucketdict:
+				if (bucket[4] not in bucketwait) or (bucketwait[bucket[4]]==0):
+					cap.set(cv2.CAP_PROP_POS_FRAMES, framenum)
+					ret, currentframe = cap.read()
+					#imShow(getbucketcrop(bucket, currentframe))
+					if args.colab:
+						get_ipython().run_line_magic('matplotlib', 'inline')
+					plt.axis("off")
+					plt.imshow(cv2.cvtColor(getbucketcrop(bucket, currentframe), cv2.COLOR_BGR2RGB))
+					plt.show(block=False)
+					time.sleep(1)
+					bucketnumber = input('Enter bucket number (if obscured press enter to move on): ')
+					if bucketnumber != '':
+						bucketcolour = input('Enter bucket colour: ')
+						bucketdict[bucket[4]] = bucketnumber + ' ' + bucketcolour
+					else:
+						bucketwait[bucket[4]] = 25
+					plt.close
+				else:
+					bucketwait[bucket[4]]=bucketwait[bucket[4]]-1
 	bucketdict  = {-1: '-1 n', 19: '7 g', 18: '3 b', 17: '7 b', 16: '8 b', 15: '4 b', 14: '3 g', 13: '5 g', 12: '6 g', 11: '10 b', 10: '5 b', 9: '2 b', 8: '2 g', 7: '1 b', 6: '8 g', 5: '1 g', 4: '10 g', 3: '6 b', 2: '4 g', 1: '9 b', 27: '9 g', 38: '7 b'}
 	return bucketdict
 
