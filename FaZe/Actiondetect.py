@@ -300,7 +300,7 @@ def Run_detection(crop, action_label):
 		#	print('%-22s %0.2f'% (action_label[str(int(i))], final_scores[int(i)]))
 		#print('<----------------->')
 		frames = []
-	return detected_action
+	return detected_action, scores_indcies[:2]
 
 
 def Detect(filename):
@@ -342,10 +342,12 @@ def Detect(filename):
 				for crop in crops:
 					
 					Create_action_tubes(crop, crops, detections, bucketlist, framenum, currentframe, maxmissedframes, maxnotintersecting)
-					action = Run_detection(crop, action_label)
+					action, scores_indcies = Run_detection(crop, action_label)
 					
 					if action == 'Taking_from_bucket':									
 						bucketdict = {}
+						for i in scores_indcies:
+							print('%-22s %0.2f'% (action_label[str(int(i))], final_scores[int(i)]))
 
 						for frameinsegment, bucketdetails in enumerate(crop.intersectingdetails[:-5]): # for each frame in the 6 frame segment except last frame
 							for bucket in bucketdetails: # for each bucket in each frame
