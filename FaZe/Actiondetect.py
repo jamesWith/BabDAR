@@ -387,7 +387,7 @@ def Detect(filename):
 	bucketcolourdict = {}
 	baboonvisitnumber = {}
 	baboonprevbucket = {}
-	with open(detfile[:-9] + "action.txt", 'w') as out_file:
+	with open(detfile[:-9] + "actionfinal.txt", 'w') as out_file:
 		print('PAIR, INDIV, PREF, TIME, VISIT N', file=out_file)
 		for action in action_dets:
 			if (action[1] != '-1') and ((action[0] not in baboonprevbucket) or (baboonprevbucket[action[0]]!=bucketdict[int(action[1])])):
