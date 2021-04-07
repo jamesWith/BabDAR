@@ -95,6 +95,7 @@ def getbucketcrop(bucket, frame):
 	return bucketcrop
 
 def selectbucket(action_dets, sampling_freq):
+	print('working?')
 	actionlist = []
 	for actionline, action in enumerate(action_dets): #go through each action in the video
 		found = False
@@ -109,6 +110,7 @@ def selectbucket(action_dets, sampling_freq):
 				break
 		if not found: # if this is a new action
 			actionlist.append([action[0], {action[1]:1}, int(action[3]), int(action[3])]) # add action to list storing Baboon ID, Dict for possible buckets, and frame number of action
+	print(actionlist)
 	output_actions = []
 	for line in actionlist:
 		output_actions.append([])
@@ -121,6 +123,7 @@ def selectbucket(action_dets, sampling_freq):
 				maxhits = value
 		output_actions[-1].append(BucketID)
 		output_actions[-1].append(str(line[3]/25))
+	return output_actions
 
 
 

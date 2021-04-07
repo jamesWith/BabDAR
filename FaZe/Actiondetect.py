@@ -381,7 +381,9 @@ def Detect(filename):
 	bucketdict = getbucketnumbers(bucketlist, cap, args.colab)
 	print(bucketdict)
 	action_dets = np.loadtxt(detfile[:-9] + "action.txt" , delimiter=' ', dtype=str)
+	print(action_dets)
 	action_dets = selectbucket(action_dets, args.sampling_freq)
+	print(action_dets)
 	bucketcolourdict = {}
 	baboonvisitnumber = {}
 	baboonprevbucket = {}
