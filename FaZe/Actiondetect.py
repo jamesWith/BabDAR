@@ -387,7 +387,7 @@ def Detect(filename):
 	print(action_dets)
 	action_dets = selectbucket(action_dets, args.sampling_freq)
 	print(action_dets)
-	bucketcolourdict = {}
+	bucketcolourdict = {'b' : 'b', 'g':'g', 'n':'n'}
 	baboonvisitnumber = {}
 	baboonprevbucket = {}
 	with open(detfile[:-9] + "actionfinal.txt", 'w') as out_file:
