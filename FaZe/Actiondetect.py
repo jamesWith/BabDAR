@@ -387,7 +387,7 @@ def Detect(filename):
 	bucketdict = getbucketnumbers(bucketlist, cap, args.colab, filename[-5:-4])
 	print(bucketdict)
 
-	if os.stat(detfile[:-9] + "action.txt").st_size == 0:
+	if os.stat(detfile[:-9] + "action.txt").st_size != 0:
 		print(os.stat(detfile[:-9] + "action.txt").st_size)
 		action_dets = np.loadtxt(detfile[:-9] + "action.txt" , delimiter=' ', dtype=str)
 		print(action_dets)
