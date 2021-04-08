@@ -44,6 +44,7 @@ parser.add_argument('--gpus', nargs='+', type=int, default=None)
 parser.add_argument('--score_weights', nargs='+', type=float, default=[1,1.5])
 parser.add_argument('--quality',type=str,default = '480p')
 parser.add_argument('--colab', type=bool, default=False)
+parser.add_argument('--bucket_weights', nargs='+', type=float, default=[1,1])
 
 
 args = parser.parse_args()
@@ -353,17 +354,17 @@ def Detect(filename):
 							for i in scores_indcies:
 								print('%-22s %0.2f'% (action_label[str(int(i))], final_scores[int(i)]))
 	
-							for frameinsegment, bucketdetails in enumerate(crop.intersectingdetails[:-5]): # for each frame in the 6 frame segment except last frame
+							for frameinsegment, bucketdetails in enumerate(crop.intersectingdetails[:-1]): # for each frame in the 6 frame segment except last frame
 								for bucket in bucketdetails: # for each bucket in each frame
 									buc1 = getbucketcrop(bucket[0], preframes[frameinsegment])
-									buc2 = getbucketcrop(bucket[0], preframes[frameinsegment + 5])
+									buc2 = getbucketcrop(bucket[0], preframes[frameinsegment + 1])
 									rgbdiffbucket = np.abs(np.subtract(buc1.astype(np.int16), buc2.astype(np.int16)))
 									movevalue = np.mean(rgbdiffbucket)
 	
 									distvalue = bucket[1]
 									if distvalue==0:
 										distvalue = 1
-									score = movevalue/distvalue
+									score = (movevalue**args.bucket_weights[0])/(distvalue**args.bucket_weights[1])
 									if bucket[0][4] not in bucketdict:
 										bucketdict[bucket[0][4]] = score
 									else:
@@ -391,7 +392,7 @@ def Detect(filename):
 		print(os.stat(detfile[:-9] + "action.txt").st_size)
 		action_dets = np.loadtxt(detfile[:-9] + "action.txt" , delimiter=' ', dtype=str)
 		print(action_dets)
-		action_dets = selectbucket(action_dets, args.sampling_freq)
+		action_dets = selectbucket(action_dets)
 		print(action_dets)
 		bucketcolourdict = {'b' : 'b', 'g':'g', 'n':'n'}
 		baboonvisitnumber = {}
