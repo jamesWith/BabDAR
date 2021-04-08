@@ -97,6 +97,7 @@ def getbucketcrop(bucket, frame):
 def selectbucket(action_dets, sampling_freq):
 	print('working?')
 	actionlist = []
+	print(action_dets[0])
 	print(isinstance(action_dets[0], list))
 	if isinstance(action_dets[0], list) is False:
 		action_dets = [action_dets]
