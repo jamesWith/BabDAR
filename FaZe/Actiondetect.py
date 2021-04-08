@@ -1,6 +1,7 @@
 import os 
 import time
 
+import os
 import torch
 import torch.nn.parallel
 import torchvision
@@ -10,6 +11,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from pathlib import Path
 from torchcam.cams import CAM
+import math
 
 from Actiontubefuncs import *
 from Modified_CNN import TSN_model
@@ -384,8 +386,9 @@ def Detect(filename):
 							crop.intersectingdetails = []
 	bucketdict = getbucketnumbers(bucketlist, cap, args.colab, filename[-5:-4])
 	print(bucketdict)
-	action_dets = np.loadtxt(detfile[:-9] + "action.txt" , delimiter=' ', dtype=str)
-	if action_dets != []:
+
+	if os.stat(detfile[:-9] + "action.txt").st_size == 0:
+		action_dets = np.loadtxt(detfile[:-9] + "action.txt" , delimiter=' ', dtype=str)
 		print(action_dets)
 		action_dets = selectbucket(action_dets, args.sampling_freq)
 		print(action_dets)
@@ -404,7 +407,7 @@ def Detect(filename):
 					if bucketdict[int(action[1])].split()[1] not in bucketcolourdict:
 						bucketcolourdict[bucketdict[int(action[1])].split()[1]] = input('What is the contents of ' + bucketdict[int(action[1])].split()[1] + ' buckets?')
 	
-					print(bucketdict[int(action[1])].split()[0] + ',' + action[0]+ ','+ bucketcolourdict[bucketdict[int(action[1])].split()[1]] + ',' + action[2] + ',' + str(baboonvisitnumber[action[0]]), file=out_file)
+					print(bucketdict[int(action[1])].split()[0] + ',' + action[0]+ ','+ bucketcolourdict[bucketdict[int(action[1])].split()[1]] + ',' + math.floor(int(action[2])/60)+':'+str(int(action[2])%60) + ',' + str(baboonvisitnumber[action[0]]), file=out_file)
 				baboonprevbucket[action[0]] = bucketdict[int(action[1])]
 	else:
 		print('no actions')
