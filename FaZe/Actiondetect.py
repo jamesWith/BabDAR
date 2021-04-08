@@ -382,7 +382,7 @@ def Detect(filename):
 						if len(crop.framesforrecognition) == args.delta*6:
 							crop.framesforrecognition = []
 							crop.intersectingdetails = []
-	bucketdict = getbucketnumbers(bucketlist, cap, args.colab)
+	bucketdict = getbucketnumbers(bucketlist, cap, args.colab, filename[-5:-4])
 	print(bucketdict)
 	action_dets = np.loadtxt(detfile[:-9] + "action.txt" , delimiter=' ', dtype=str)
 	if action_dets != []:
