@@ -408,7 +408,7 @@ def Detect(filename):
 					if bucketdict[int(action[1])].split()[1] not in bucketcolourdict:
 						bucketcolourdict[bucketdict[int(action[1])].split()[1]] = input('What is the contents of ' + bucketdict[int(action[1])].split()[1] + ' buckets?')
 	
-					print(bucketdict[int(action[1])].split()[0] + ',' + action[0]+ ','+ bucketcolourdict[bucketdict[int(action[1])].split()[1]] + ',' + math.floor(int(action[2])/60)+':'+str(int(action[2])%60) + ',' + str(baboonvisitnumber[action[0]]), file=out_file)
+					print(bucketdict[int(action[1])].split()[0] + ',' + action[0]+ ','+ bucketcolourdict[bucketdict[int(action[1])].split()[1]] + ',' + math.floor(int(float(action[2]))/60)+':'+str(int(float(action[2]))%60) + ',' + str(baboonvisitnumber[action[0]]), file=out_file)
 				baboonprevbucket[action[0]] = bucketdict[int(action[1])]
 	else:
 		print('no actions')
