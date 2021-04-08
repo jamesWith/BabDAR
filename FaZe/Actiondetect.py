@@ -331,7 +331,6 @@ def Detect(filename):
 		for framenum, detections in enumerate(baboonlist[startframe::], start = startframe):
 			ret, currentframe = cap.read()
 			if ret:
-				print(detections)
 				preframes.append(currentframe)
 				if len(preframes) > 6:
 					preframes.pop(0)
