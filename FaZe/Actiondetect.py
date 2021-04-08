@@ -330,81 +330,84 @@ def Detect(filename):
 			# Start looking for the baboon at first frame it appears
 		for framenum, detections in enumerate(baboonlist[startframe::], start = startframe):
 			ret, currentframe = cap.read()
-			preframes.append(currentframe)
-			if len(preframes) > 6:
-				preframes.pop(0)
-			
-			if detections != []: # if baboons are detected
-	
-				detections = np.asarray(detections)
-	
-				Add_new_crops(crops, detections, bucketlist, framenum)
+			if ret:
+				preframes.append(currentframe)
+				if len(preframes) > 6:
+					preframes.pop(0)
 				
-				for crop in crops:
+				if detections != []: # if baboons are detected
+		
+					detections = np.asarray(detections)
+		
+					Add_new_crops(crops, detections, bucketlist, framenum)
 					
-					Create_action_tubes(crop, crops, detections, bucketlist, framenum, currentframe, maxmissedframes, maxnotintersecting)
-					action, scores_indcies, final_scores = Run_detection(crop, action_label)
-					
-					if action == 'Taking_from_bucket':									
-						bucketdict = {}
-						for i in scores_indcies:
-							print('%-22s %0.2f'% (action_label[str(int(i))], final_scores[int(i)]))
-
-						for frameinsegment, bucketdetails in enumerate(crop.intersectingdetails[:-5]): # for each frame in the 6 frame segment except last frame
-							for bucket in bucketdetails: # for each bucket in each frame
-								buc1 = getbucketcrop(bucket[0], preframes[frameinsegment])
-								buc2 = getbucketcrop(bucket[0], preframes[frameinsegment + 5])
-								rgbdiffbucket = np.abs(np.subtract(buc1.astype(np.int16), buc2.astype(np.int16)))
-								movevalue = np.mean(rgbdiffbucket)
-
-								distvalue = bucket[1]
-								if distvalue==0:
-									distvalue = 1
-								score = movevalue/distvalue
-								if bucket[0][4] not in bucketdict:
-									bucketdict[bucket[0][4]] = score
-								else:
-									bucketdict[bucket[0][4]] = bucketdict[bucket[0][4]] + score #add up the total intersecting_area() over six frames
-						BucketID = -1
-						maxscore = 0
-						for key, value in bucketdict.items():
-							if value > maxscore:
-								BucketID = key # Bucket with the highest total is assigned the action
-								maxscore = value
-						print('Baboon ID:' + str(crop.ID))
-						print('Took from bucket:' + str(BucketID))
-						print('At frame number:' + str(startframe + framenum))
-						print('At time:' + str((startframe + framenum)/25) + 's')
-						print('<----------------->')
-						print(str(crop.ID) + ' ' + str(BucketID) + ' ' + str((startframe + framenum)/25) + ' ' + str(startframe + framenum), file=out_file)
+					for crop in crops:
+						
+						Create_action_tubes(crop, crops, detections, bucketlist, framenum, currentframe, maxmissedframes, maxnotintersecting)
+						action, scores_indcies, final_scores = Run_detection(crop, action_label)
+						
+						if action == 'Taking_from_bucket':									
+							bucketdict = {}
+							for i in scores_indcies:
+								print('%-22s %0.2f'% (action_label[str(int(i))], final_scores[int(i)]))
 	
-					if len(crop.framesforrecognition) == args.delta*6:
-						crop.framesforrecognition = []
-						crop.intersectingdetails = []
+							for frameinsegment, bucketdetails in enumerate(crop.intersectingdetails[:-5]): # for each frame in the 6 frame segment except last frame
+								for bucket in bucketdetails: # for each bucket in each frame
+									buc1 = getbucketcrop(bucket[0], preframes[frameinsegment])
+									buc2 = getbucketcrop(bucket[0], preframes[frameinsegment + 5])
+									rgbdiffbucket = np.abs(np.subtract(buc1.astype(np.int16), buc2.astype(np.int16)))
+									movevalue = np.mean(rgbdiffbucket)
+	
+									distvalue = bucket[1]
+									if distvalue==0:
+										distvalue = 1
+									score = movevalue/distvalue
+									if bucket[0][4] not in bucketdict:
+										bucketdict[bucket[0][4]] = score
+									else:
+										bucketdict[bucket[0][4]] = bucketdict[bucket[0][4]] + score #add up the total intersecting_area() over six frames
+							BucketID = -1
+							maxscore = 0
+							for key, value in bucketdict.items():
+								if value > maxscore:
+									BucketID = key # Bucket with the highest total is assigned the action
+									maxscore = value
+							print('Baboon ID:' + str(crop.ID))
+							print('Took from bucket:' + str(BucketID))
+							print('At frame number:' + str(startframe + framenum))
+							print('At time:' + str((startframe + framenum)/25) + 's')
+							print('<----------------->')
+							print(str(crop.ID) + ' ' + str(BucketID) + ' ' + str((startframe + framenum)/25) + ' ' + str(startframe + framenum), file=out_file)
+		
+						if len(crop.framesforrecognition) == args.delta*6:
+							crop.framesforrecognition = []
+							crop.intersectingdetails = []
 	bucketdict = getbucketnumbers(bucketlist, cap, args.colab)
 	print(bucketdict)
 	action_dets = np.loadtxt(detfile[:-9] + "action.txt" , delimiter=' ', dtype=str)
-	print(action_dets)
-	action_dets = selectbucket(action_dets, args.sampling_freq)
-	print(action_dets)
-	bucketcolourdict = {'b' : 'b', 'g':'g', 'n':'n'}
-	baboonvisitnumber = {}
-	baboonprevbucket = {}
-	with open(detfile[:-9] + "actionfinal.txt", 'w') as out_file:
-		print('PAIR, INDIV, PREF, TIME, VISIT N', file=out_file)
-		for action in action_dets:
-			if (action[1] != '-1') and ((action[0] not in baboonprevbucket) or (baboonprevbucket[action[0]]!=bucketdict[int(action[1])])):
-				if action[0] not in baboonvisitnumber:
-					baboonvisitnumber[action[0]] = 1
-				else:
-					baboonvisitnumber[action[0]] = baboonvisitnumber[action[0]] + 1
-
-				if bucketdict[int(action[1])].split()[1] not in bucketcolourdict:
-					bucketcolourdict[bucketdict[int(action[1])].split()[1]] = input('What is the contents of ' + bucketdict[int(action[1])].split()[1] + ' buckets?')
-
-				print(bucketdict[int(action[1])].split()[0] + ',' + action[0]+ ','+ bucketcolourdict[bucketdict[int(action[1])].split()[1]] + ',' + action[2] + ',' + str(baboonvisitnumber[action[0]]), file=out_file)
-			baboonprevbucket[action[0]] = bucketdict[int(action[1])]
-
+	if action_dets != []:
+		print(action_dets)
+		action_dets = selectbucket(action_dets, args.sampling_freq)
+		print(action_dets)
+		bucketcolourdict = {'b' : 'b', 'g':'g', 'n':'n'}
+		baboonvisitnumber = {}
+		baboonprevbucket = {}
+		with open(detfile[:-9] + "actionfinal.txt", 'w') as out_file:
+			print('PAIR, INDIV, PREF, TIME, VISIT N', file=out_file)
+			for action in action_dets:
+				if (action[1] != '-1') and ((action[0] not in baboonprevbucket) or (baboonprevbucket[action[0]]!=bucketdict[int(action[1])])):
+					if action[0] not in baboonvisitnumber:
+						baboonvisitnumber[action[0]] = 1
+					else:
+						baboonvisitnumber[action[0]] = baboonvisitnumber[action[0]] + 1
+	
+					if bucketdict[int(action[1])].split()[1] not in bucketcolourdict:
+						bucketcolourdict[bucketdict[int(action[1])].split()[1]] = input('What is the contents of ' + bucketdict[int(action[1])].split()[1] + ' buckets?')
+	
+					print(bucketdict[int(action[1])].split()[0] + ',' + action[0]+ ','+ bucketcolourdict[bucketdict[int(action[1])].split()[1]] + ',' + action[2] + ',' + str(baboonvisitnumber[action[0]]), file=out_file)
+				baboonprevbucket[action[0]] = bucketdict[int(action[1])]
+	else:
+		print('no actions')
 	cap.release()
 	return
 			

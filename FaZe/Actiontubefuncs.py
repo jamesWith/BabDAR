@@ -97,6 +97,8 @@ def getbucketcrop(bucket, frame):
 def selectbucket(action_dets, sampling_freq):
 	print('working?')
 	actionlist = []
+	if isinstance(action_dets[0], list) is False:
+		action_dets = [action_dets]
 	for actionline, action in enumerate(action_dets): #go through each action in the video
 		found = False
 		for currentaction in reversed(actionlist):
@@ -104,7 +106,7 @@ def selectbucket(action_dets, sampling_freq):
 				if action[1] in currentaction[1]: # if this actions bucket is already in dict of buckets from recent actions
 					currentaction[1][action[1]] = currentaction[1][action[1]] + 1 # then add 1
 				else:
-					currentaction[1][action[1]] = 1 # or just set to 1 if it wasnt there before
+					currentaction[1][action[1]] = 1 # or just add to dict set to 1 if it wasnt there before
 				currentaction[2] = int(action[3]) # set frame of last action to current frame
 				found = True
 				break
@@ -118,7 +120,7 @@ def selectbucket(action_dets, sampling_freq):
 		BucketID = '-1'
 		maxhits = 0
 		for key, value in line[1].items():
-			if value > maxhits:
+			if value >= maxhits:
 				BucketID = key # Bucket with the highest total is assigned the action
 				maxhits = value
 		output_actions[-1].append(BucketID)
@@ -161,6 +163,20 @@ def getbucketnumbers(bucketlist, cap, colab):
 	#C
 	#bucketdict  = {-1: '-1 n', 19: '7 g', 18: '3 b', 17: '7 b', 16: '8 b', 15: '4 b', 14: '3 g', 13: '5 g', 12: '6 g', 11: '10 b', 10: '5 b', 9: '2 b', 8: '2 g', 7: '1 b', 6: '8 g', 5: '1 g', 4: '10 g', 3: '6 b', 2: '4 g', 1: '9 b', 27: '9 g', 38: '7 b'}
 	#newbucketdict  = {-1: '-1 n', 19: '7 g', 18: '3 b', 17: '6 g', 16: '2 b', 15: '1 g', 14: '10 b', 13: '3 g', 12: '7 b', 11: '8 b', 10: '2 g', 9: '1 b', 8: '8 g', 7: '10 g', 6: '4 b', 5: '5 g', 4: '4 g', 3: '9 b', 2: '6 b', 1: '5 b', 27: '9 g', 72: '7 b', 89: '10 b'}
+	# D
+	# bucketdict = {-1: '-1 n', 20: '1 b', 19: '9 g', 18: '10 b', 17: '4 b', 16: '4 g', 15: '3 b', 14: '6 g', 13: '8 g', 12: '7 g', 11: '1 g', 10: '10 g', 9: '8 b', 8: '9 b', 7: '3 g', 6: '2 g', 5: '5 b', 4: '6 b', 3: '5 g', 2: '7 b', 1: '2 b'}
+	# E
+	# bucketdict = {-1: '-1 n', 20: '2 b', 19: '7 g', 18: '10 g', 17: '10 b', 16: '8 b', 15: '8 g', 14: '6 b', 13: '2 g', 12: '7 b', 11: '5 g', 10: '6 g', 9: '9 g', 8: '1 g', 7: '3 b', 6: '5 b', 5: '4 g', 4: '3 g', 3: '9 b', 2: '4 b', 1: '1 b'}
+	# F
+	# {-1: '-1 n', 20: '3 b', 19: '10 g', 18: '7 g', 17: '6 g', 16: '10 b', 15: '8 g', 14: '4 b', 13: '8 b', 12: '2 b', 11: '6 b', 10: '7 b', 9: '9 g', 8: '9 b', 7: '1 b', 6: '2 g', 5: '1 g', 4: '4 g', 3: '5 g', 2: '3 g', 1: '5 b'}
+	# G
+	# {-1: '-1 n', 20: '3 b', 19: '2 g', 18: '4 g', 17: '6 b', 16: '9 b', 15: '1 g', 14: '7 b', 13: '10 g', 12: '3 g', 11: '8 b', 10: '4 b', 9: '10 b', 8: '2 b', 7: '1 b', 6: '5 b', 5: '7 g', 4: '5 g', 3: '6 g', 2: '8 g', 1: '9 g'}
+	# H
+	# {-1: '-1 n', 20: '1 b', 19: '10 b', 18: '2 b', 17: '4 g', 16: '5 g', 15: '9 g', 14: '6 b', 13: '4 b', 12: '9 b', 11: '7 g', 10: '3 b', 9: '3 g', 8: '8 g', 7: '1 g', 6: '5 b', 5: '7 b', 4: '6 g', 3: '2 g', 2: '10 g', 1: '8 b', 29: '10 b', 30: '10 g', 50: '10 g', 58: '10 g', 73: '10 g', 88: '7 g', 102: '2 b', 114: '2 b', 126: '7 b', 159: '8 b', 158: '9 b', 170: '7 g', 179: '7 g', 178: '7 b', 193: '7 b', 187: '4 b', 196: '4 g', 202: '2 b'}
+	# I
+	# {-1: '-1 n', 20: '1 g', 19: '1 b', 18: '3 b', 17: '10 b', 16: '2 g', 15: '2 b', 14: '10 g', 13: '9 b', 12: '5 g', 11: '4 b', 10: '7 b', 9: '5 b', 8: '3 g', 7: '8 b', 6: '9 g', 5: '4 g', 4: '6 g', 3: '6 b', 2: '7 g', 1: '8 g', 55: '6 g', 59: '6 g', 81: '9 b', 97: '6 g', 111: '7 b', 114: '5 g', 121: '9 b', 133: '9 g', 136: '10 b', 144: '10 b', 169: '9 g'}
+	# J
+	# {-1: '-1 n', 20: '8 b', 19: '7 g', 18: '5 g', 17: '4 b', 16: '7 b', 15: '6 b', 14: '8 g', 13: '2 g', 12: '1 b', 11: '10 g', 10: '5 b', 9: '6 g', 8: '2 b', 7: '1 g', 6: '9 b', 5: '3 g', 4: '9 g', 3: '3 b', 2: '4 g', 1: '10 b'}
 
 	return bucketdict
 
