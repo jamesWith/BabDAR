@@ -335,7 +335,7 @@ def Detect(filename):
 			ret, currentframe = cap.read()
 			if ret:
 				preframes.append(currentframe)
-				if len(preframes) > 6:
+				if len(preframes) > args.delta*6:
 					preframes.pop(0)
 				
 				if detections != []: # if baboons are detected
