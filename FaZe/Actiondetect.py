@@ -388,6 +388,7 @@ def Detect(filename):
 	print(bucketdict)
 
 	if os.stat(detfile[:-9] + "action.txt").st_size == 0:
+		print(os.stat(detfile[:-9] + "action.txt").st_size)
 		action_dets = np.loadtxt(detfile[:-9] + "action.txt" , delimiter=' ', dtype=str)
 		print(action_dets)
 		action_dets = selectbucket(action_dets, args.sampling_freq)
