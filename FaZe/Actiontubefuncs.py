@@ -95,11 +95,9 @@ def getbucketcrop(bucket, frame):
 	return bucketcrop
 
 def selectbucket(action_dets, sampling_freq):
-	print('working?')
 	actionlist = []
-	print(type(action_dets[0]))
-	print(isinstance(action_dets[0], list))
-	if isinstance(action_dets[0], list) is False:
+	for
+	if isinstance(action_dets[0], 'numpy.ndarray') is False:
 		action_dets = [action_dets]
 	for actionline, action in enumerate(action_dets): #go through each action in the video
 		found = False
