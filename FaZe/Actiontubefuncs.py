@@ -101,7 +101,7 @@ def selectbucket(action_dets):
 	for actionline, action in enumerate(action_dets): #go through each action in the video
 		found = False
 		for currentaction in reversed(actionlist):
-			if (currentaction[0] == action[0]) and (int(action[3]) - currentaction[2] < 25): # check if that baboon has done an action recently
+			if (currentaction[0] == action[0]) and (int(action[3]) - currentaction[2] < 26): # check if that baboon has done an action recently
 				if action[1] in currentaction[1]: # if this actions bucket is already in dict of buckets from recent actions
 					currentaction[1][action[1]] = currentaction[1][action[1]] + 1 # then add 1
 				else:
@@ -130,68 +130,68 @@ def selectbucket(action_dets):
 
 
 def getbucketnumbers(bucketlist, cap, colab, letter):
-	#bucketdict = {-1: "-1 n"}
-	#bucketwait = {}
-	#if colab:
-	#	from IPython.display import Image
-	#for framenum, bucketperframe in enumerate(bucketlist):
-	#	for bucket in bucketperframe:
-	#		if bucket[4] not in bucketdict:
-	#			if (bucket[4] not in bucketwait) or (bucketwait[bucket[4]]==0):
-	#				cap.set(cv2.CAP_PROP_POS_FRAMES, framenum)
-	#				ret, currentframe = cap.read()
-	#				if colab:
-	#					get_ipython().run_line_magic('matplotlib', 'inline')
-	#				plt.axis("off")
-	#				plt.imshow(cv2.cvtColor(getbucketcrop(bucket, currentframe), cv2.COLOR_BGR2RGB))
-	#				if colab:
-	#					plt.show()
-	#				else:
-	#					plt.show(block=False)
-	#				time.sleep(1)
-	#				bucketnumber = input('Enter bucket number (if obscured press enter to move on): ')
-	#				if bucketnumber != '':
-	#					bucketcolour = input('Enter bucket colour: ')
-	#					bucketdict[bucket[4]] = bucketnumber + ' ' + bucketcolour
-	#				else:
-	#					bucketwait[bucket[4]] = 25
-	#				if not colab:
-	#					plt.close()
-	#			else:
-	#				bucketwait[bucket[4]]=bucketwait[bucket[4]]-1
-	if letter == 'C':
-	#C
-		bucketdict  = {-1: '-1 n', 19: '7 g', 18: '3 b', 17: '7 b', 16: '8 b', 15: '4 b', 14: '3 g', 13: '5 g', 12: '6 g', 11: '10 b', 10: '5 b', 9: '2 b', 8: '2 g', 7: '1 b', 6: '8 g', 5: '1 g', 4: '10 g', 3: '6 b', 2: '4 g', 1: '9 b', 27: '9 g', 38: '7 b'}
-	#newbucketdict  = {-1: '-1 n', 19: '7 g', 18: '3 b', 17: '6 g', 16: '2 b', 15: '1 g', 14: '10 b', 13: '3 g', 12: '7 b', 11: '8 b', 10: '2 g', 9: '1 b', 8: '8 g', 7: '10 g', 6: '4 b', 5: '5 g', 4: '4 g', 3: '9 b', 2: '6 b', 1: '5 b', 27: '9 g', 72: '7 b', 89: '10 b'}
-	elif letter == 'D':
-	# D
-		bucketdict = {-1: '-1 n', 20: '1 b', 19: '9 g', 18: '10 b', 17: '4 b', 16: '4 g', 15: '3 b', 14: '6 g', 13: '8 g', 12: '7 g', 11: '1 g', 10: '10 g', 9: '8 b', 8: '9 b', 7: '3 g', 6: '2 g', 5: '5 b', 4: '6 b', 3: '5 g', 2: '7 b', 1: '2 b'}
-	elif letter == 'E':
-	# E
-		bucketdict = {-1: '-1 n', 20: '2 b', 19: '7 g', 18: '10 g', 17: '10 b', 16: '8 b', 15: '8 g', 14: '6 b', 13: '2 g', 12: '7 b', 11: '5 g', 10: '6 g', 9: '9 g', 8: '1 g', 7: '3 b', 6: '5 b', 5: '4 g', 4: '3 g', 3: '9 b', 2: '4 b', 1: '1 b'}
-	elif letter == 'F':
-	# F
-		bucketdict = {-1: '-1 n', 20: '3 b', 19: '10 g', 18: '7 g', 17: '6 g', 16: '10 b', 15: '8 g', 14: '4 b', 13: '8 b', 12: '2 b', 11: '6 b', 10: '7 b', 9: '9 g', 8: '9 b', 7: '1 b', 6: '2 g', 5: '1 g', 4: '4 g', 3: '5 g', 2: '3 g', 1: '5 b'}
-	elif letter == 'G':
-	# G
-		bucketdict = {-1: '-1 n', 20: '3 b', 19: '2 g', 18: '4 g', 17: '6 b', 16: '9 b', 15: '1 g', 14: '7 b', 13: '10 g', 12: '3 g', 11: '8 b', 10: '4 b', 9: '10 b', 8: '2 b', 7: '1 b', 6: '5 b', 5: '7 g', 4: '5 g', 3: '6 g', 2: '8 g', 1: '9 g'}
-	elif letter == 'H':
-	# H
-		bucketdict = {-1: '-1 n', 20: '1 b', 19: '10 b', 18: '2 b', 17: '4 g', 16: '5 g', 15: '9 g', 14: '6 b', 13: '4 b', 12: '9 b', 11: '7 g', 10: '3 b', 9: '3 g', 8: '8 g', 7: '1 g', 6: '5 b', 5: '7 b', 4: '6 g', 3: '2 g', 2: '10 g', 1: '8 b', 29: '10 b', 30: '10 g', 50: '10 g', 58: '10 g', 73: '10 g', 88: '7 g', 102: '2 b', 114: '2 b', 126: '7 b', 159: '8 b', 158: '9 b', 170: '7 g', 179: '7 g', 178: '7 b', 193: '7 b', 187: '4 b', 196: '4 g', 202: '2 b'}
-	elif letter == 'I':
-	# I
-		bucketdict = {-1: '-1 n', 20: '1 g', 19: '1 b', 18: '3 b', 17: '10 b', 16: '2 g', 15: '2 b', 14: '10 g', 13: '9 b', 12: '5 g', 11: '4 b', 10: '7 b', 9: '5 b', 8: '3 g', 7: '8 b', 6: '9 g', 5: '4 g', 4: '6 g', 3: '6 b', 2: '7 g', 1: '8 g', 55: '6 g', 59: '6 g', 81: '9 b', 97: '6 g', 111: '7 b', 114: '5 g', 121: '9 b', 133: '9 g', 136: '10 b', 144: '10 b', 169: '9 g'}
-	elif letter == 'J':
-	# J
-		bucketdict = {-1: '-1 n', 20: '8 b', 19: '7 g', 18: '5 g', 17: '4 b', 16: '7 b', 15: '6 b', 14: '8 g', 13: '2 g', 12: '1 b', 11: '10 g', 10: '5 b', 9: '6 g', 8: '2 b', 7: '1 g', 6: '9 b', 5: '3 g', 4: '9 g', 3: '3 b', 2: '4 g', 1: '10 b'}
-	elif letter == 'K':
-	# K
-		bucketdict = {-1: '-1 n', 44: '2 g', 45: '2 g', 32: '5 b', 11: '3 b', 9: '7 g', 38: '8 b', 36: '7 b', 35: '4 g', 34: '6 g', 5: '1 b', 39: '4 b', 20: '6 b', 43: '1 g', 27: '3 g', 26: '9 b', 47: '5 g', 25: '9 g', 6: '2 b', 30: '10 b', 2: '10 g', 42: '8 g'}
-	elif letter == 'B':
-	# B
-		bucketdict = {-1: '-1 n', 20: '2 g', 19: '9 b', 18: '8 b', 17: '1 b', 16: '5 b', 15: '9 g', 14: '8 g', 13: '1 g', 12: '6 b', 11: '7 g', 10: '7 b', 9: '4 g', 8: '6 g', 7: '10 g', 6: '10 b', 5: '4 b', 4: '2 b', 3: '5 g', 2: '3 g', 1: '3 b', 142: '9 b', 224: '6 b', 341: '6 b', 342: '2 g', 350: '3 b', 349: '5 g', 356: '6 b', 357: '6 g', 380: '7 g', 386: '8 b', 392: '8 g', 431: '10 b', 433: '3 g', 436: '10 g', 462: '8 b', 486: '2 g', 542: '9 g', 549: '10 g', 653: '5 g', 713: '5 g', 715: '9 b', 727: '10 b', 725: '8 g', 739: '5 g', 747: '9 b'}
-	else:
-		print('panic')
+	bucketdict = {-1: "-1 n"}
+	bucketwait = {}
+	if colab:
+		from IPython.display import Image
+	for framenum, bucketperframe in enumerate(bucketlist):
+		for bucket in bucketperframe:
+			if bucket[4] not in bucketdict:
+				if (bucket[4] not in bucketwait) or (bucketwait[bucket[4]]==0):
+					cap.set(cv2.CAP_PROP_POS_FRAMES, framenum)
+					ret, currentframe = cap.read()
+					if colab:
+						get_ipython().run_line_magic('matplotlib', 'inline')
+					plt.axis("off")
+					plt.imshow(cv2.cvtColor(getbucketcrop(bucket, currentframe), cv2.COLOR_BGR2RGB))
+					if colab:
+						plt.show()
+					else:
+						plt.show(block=False)
+					time.sleep(1)
+					bucketnumber = input('Enter bucket number (if obscured press enter to move on): ')
+					if bucketnumber != '':
+						bucketcolour = input('Enter bucket colour: ')
+						bucketdict[bucket[4]] = bucketnumber + ' ' + bucketcolour
+					else:
+						bucketwait[bucket[4]] = 25
+					if not colab:
+						plt.close()
+				else:
+					bucketwait[bucket[4]]=bucketwait[bucket[4]]-1
+	#if letter == 'C':
+	##C
+	#	bucketdict  = {-1: '-1 n', 19: '7 g', 18: '3 b', 17: '7 b', 16: '8 b', 15: '4 b', 14: '3 g', 13: '5 g', 12: '6 g', 11: '10 b', 10: '5 b', 9: '2 b', 8: '2 g', 7: '1 b', 6: '8 g', 5: '1 g', 4: '10 g', 3: '6 b', 2: '4 g', 1: '9 b', 27: '9 g', 38: '7 b'}
+	##newbucketdict  = {-1: '-1 n', 19: '7 g', 18: '3 b', 17: '6 g', 16: '2 b', 15: '1 g', 14: '10 b', 13: '3 g', 12: '7 b', 11: '8 b', 10: '2 g', 9: '1 b', 8: '8 g', 7: '10 g', 6: '4 b', 5: '5 g', 4: '4 g', 3: '9 b', 2: '6 b', 1: '5 b', 27: '9 g', 72: '7 b', 89: '10 b'}
+	#elif letter == 'D':
+	## D
+	#	bucketdict = {-1: '-1 n', 20: '1 b', 19: '9 g', 18: '10 b', 17: '4 b', 16: '4 g', 15: '3 b', 14: '6 g', 13: '8 g', 12: '7 g', 11: '1 g', 10: '10 g', 9: '8 b', 8: '9 b', 7: '3 g', 6: '2 g', 5: '5 b', 4: '6 b', 3: '5 g', 2: '7 b', 1: '2 b'}
+	#elif letter == 'E':
+	## E
+	#	bucketdict = {-1: '-1 n', 20: '2 b', 19: '7 g', 18: '10 g', 17: '10 b', 16: '8 b', 15: '8 g', 14: '6 b', 13: '2 g', 12: '7 b', 11: '5 g', 10: '6 g', 9: '9 g', 8: '1 g', 7: '3 b', 6: '5 b', 5: '4 g', 4: '3 g', 3: '9 b', 2: '4 b', 1: '1 b'}
+	#elif letter == 'F':
+	## F
+	#	bucketdict = {-1: '-1 n', 20: '3 b', 19: '10 g', 18: '7 g', 17: '6 g', 16: '10 b', 15: '8 g', 14: '4 b', 13: '8 b', 12: '2 b', 11: '6 b', 10: '7 b', 9: '9 g', 8: '9 b', 7: '1 b', 6: '2 g', 5: '1 g', 4: '4 g', 3: '5 g', 2: '3 g', 1: '5 b'}
+	#elif letter == 'G':
+	## G
+	#	bucketdict = {-1: '-1 n', 20: '3 b', 19: '2 g', 18: '4 g', 17: '6 b', 16: '9 b', 15: '1 g', 14: '7 b', 13: '10 g', 12: '3 g', 11: '8 b', 10: '4 b', 9: '10 b', 8: '2 b', 7: '1 b', 6: '5 b', 5: '7 g', 4: '5 g', 3: '6 g', 2: '8 g', 1: '9 g'}
+	#elif letter == 'H':
+	## H
+	#	bucketdict = {-1: '-1 n', 20: '1 b', 19: '10 b', 18: '2 b', 17: '4 g', 16: '5 g', 15: '9 g', 14: '6 b', 13: '4 b', 12: '9 b', 11: '7 g', 10: '3 b', 9: '3 g', 8: '8 g', 7: '1 g', 6: '5 b', 5: '7 b', 4: '6 g', 3: '2 g', 2: '10 g', 1: '8 b', 29: '10 b', 30: '10 g', 50: '10 g', 58: '10 g', 73: '10 g', 88: '7 g', 102: '2 b', 114: '2 b', 126: '7 b', 159: '8 b', 158: '9 b', 170: '7 g', 179: '7 g', 178: '7 b', 193: '7 b', 187: '4 b', 196: '4 g', 202: '2 b'}
+	#elif letter == 'I':
+	## I
+	#	bucketdict = {-1: '-1 n', 20: '1 g', 19: '1 b', 18: '3 b', 17: '10 b', 16: '2 g', 15: '2 b', 14: '10 g', 13: '9 b', 12: '5 g', 11: '4 b', 10: '7 b', 9: '5 b', 8: '3 g', 7: '8 b', 6: '9 g', 5: '4 g', 4: '6 g', 3: '6 b', 2: '7 g', 1: '8 g', 55: '6 g', 59: '6 g', 81: '9 b', 97: '6 g', 111: '7 b', 114: '5 g', 121: '9 b', 133: '9 g', 136: '10 b', 144: '10 b', 169: '9 g'}
+	#elif letter == 'J':
+	## J
+	#	bucketdict = {-1: '-1 n', 20: '8 b', 19: '7 g', 18: '5 g', 17: '4 b', 16: '7 b', 15: '6 b', 14: '8 g', 13: '2 g', 12: '1 b', 11: '10 g', 10: '5 b', 9: '6 g', 8: '2 b', 7: '1 g', 6: '9 b', 5: '3 g', 4: '9 g', 3: '3 b', 2: '4 g', 1: '10 b'}
+	#elif letter == 'K':
+	## K
+	#	bucketdict = {-1: '-1 n', 44: '2 g', 45: '2 g', 32: '5 b', 11: '3 b', 9: '7 g', 38: '8 b', 36: '7 b', 35: '4 g', 34: '6 g', 5: '1 b', 39: '4 b', 20: '6 b', 43: '1 g', 27: '3 g', 26: '9 b', 47: '5 g', 25: '9 g', 6: '2 b', 30: '10 b', 2: '10 g', 42: '8 g'}
+	#elif letter == 'B':
+	## B
+	#	bucketdict = {-1: '-1 n', 20: '2 g', 19: '9 b', 18: '8 b', 17: '1 b', 16: '5 b', 15: '9 g', 14: '8 g', 13: '1 g', 12: '6 b', 11: '7 g', 10: '7 b', 9: '4 g', 8: '6 g', 7: '10 g', 6: '10 b', 5: '4 b', 4: '2 b', 3: '5 g', 2: '3 g', 1: '3 b', 142: '9 b', 224: '6 b', 341: '6 b', 342: '2 g', 350: '3 b', 349: '5 g', 356: '6 b', 357: '6 g', 380: '7 g', 386: '8 b', 392: '8 g', 431: '10 b', 433: '3 g', 436: '10 g', 462: '8 b', 486: '2 g', 542: '9 g', 549: '10 g', 653: '5 g', 713: '5 g', 715: '9 b', 727: '10 b', 725: '8 g', 739: '5 g', 747: '9 b'}
+	#else:
+	#	print('panic')
 	return bucketdict
 
 
