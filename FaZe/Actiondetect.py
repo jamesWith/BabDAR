@@ -29,7 +29,7 @@ parser.add_argument('weights', nargs='+', type=str,
                     help='1st and 2nd index is RGB and RGBDiff weights respectively')
 parser.add_argument('--det_file_name', type=str, default='dettrack.txt')
 parser.add_argument('--arch', type=str, default="BNInception")
-parser.add_argument('--num_segments', type=int, default=8, help="Sliding Window Width")
+parser.add_argument('--num_segments', type=int, default=3, help="Sliding Window Width")
 parser.add_argument('--sampling_freq', type=int, default=12, help="Take 1 image every 12 image")
 parser.add_argument('--delta', type=int, default=2, help="Sliding Window Delta")
 parser.add_argument('--psi', type=float, default=2.5)
@@ -38,8 +38,8 @@ parser.add_argument('--crop_fusion_type', type=str, default='avg',
                     choices=['avg', 'max', 'topk'])
 parser.add_argument('--dropout', type=float, default=0.7)
 parser.add_argument('--classInd_file', type=str, default='')
-parser.add_argument('-j', '--workers', default=4, type=int, metavar='N',
-                    help='number of data loading workers (default: 4)')
+parser.add_argument('-j', '--workers', default=1, type=int, metavar='N',
+                    help='number of data loading workers (default: 1)')
 parser.add_argument('--gpus', nargs='+', type=int, default=None)
 parser.add_argument('--score_weights', nargs='+', type=float, default=[1,1.5])
 parser.add_argument('--quality',type=str,default = '480p')
